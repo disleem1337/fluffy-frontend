@@ -8,7 +8,7 @@ type BaseLayoutProps = {
 
 export const BaseLayout = ({ children }: BaseLayoutProps) => {
   return (
-    <div tw="h-screen bg-bgcolor ">
+    <div tw="h-full bg-bgcolor ">
       <Header />
       {children}
     </div>

@@ -9,38 +9,45 @@ import { HiOutlineUserGroup } from "react-icons/hi";
 import { BsChatDots } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import NullAvatar from "../assets/nullavatar.png";
+import { Profiletab } from "./Profiletab";
 
 const HeaderLink: Array<{
+  id: number;
   name: string;
   link: string;
   icon: React.ReactNode;
   active: Boolean;
 }> = [
   {
+    id: 1,
     name: "Home",
     link: "/",
     icon: <AiOutlineHome size={20} />,
     active: true,
   },
   {
+    id: 2,
     name: "Bağlantılar",
     link: "/login",
     icon: <HiOutlineUserGroup size={18} />,
     active: false,
   },
   {
+    id: 3,
     name: "Sohbetler",
     link: "/",
     icon: <BsChatDots size={18} />,
     active: false,
   },
   {
+    id: 4,
     name: "Bildirimler",
     link: "/",
     icon: <AiOutlineNotification size={18} />,
     active: false,
   },
   {
+    id: 5,
     name: "Uygulamalar",
     link: "/",
     icon: <AiOutlineAppstoreAdd size={18} />,
@@ -64,9 +71,9 @@ const Header = () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               ></path>
             </svg>
@@ -79,19 +86,19 @@ const Header = () => {
           />
         </div>
       </div>
-      <div tw="flex gap-3 justify-evenly col-span-2">
+      <div tw="flex gap-3 justify-around col-span-2">
         {HeaderLink.map((link) => (
           <HeaderTab
             name={link.name}
             link={link.link}
             icon={link.icon}
             active={link.active}
+            key={link.id}
           />
         ))}
       </div>
       <div tw="flex items-center justify-end gap-3">
-        <img tw="w-8" src={NullAvatar} />
-        <div>0x123...456</div>
+        <Profiletab name="123...456" />
       </div>
     </div>
   );

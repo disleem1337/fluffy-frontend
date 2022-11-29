@@ -1,15 +1,23 @@
 import { BaseLayout } from "../layout/baselayout";
 import tw from "twin.macro";
 import { SummaryCard } from "../components/Summarycard";
+import PrivacyTerms from "../components/privacy";
+import ShareStatus from "../components/Sharestatus";
+import Post from "../components/Post";
 
 function Fluffy() {
   return (
     <BaseLayout>
       <div tw="px-14 py-6 grid grid-cols-4 gap-3">
-        <div tw="col-span-1">
+        <div tw="col-span-1 flex flex-col gap-2 sticky top-8 h-[fit-content]">
           <SummaryCard />
+          <PrivacyTerms />
         </div>
-        <div>1</div>
+        <div tw="col-span-2 flex flex-col gap-4">
+          <ShareStatus />
+          <Post />
+          <Post />
+        </div>
         <div>1</div>
       </div>
     </BaseLayout>
