@@ -53,7 +53,7 @@ const Sharestatus = () => {
         </div>
       </div>
       <hr tw="h-0.5 w-full bg-gray-200 border-0"></hr>
-      <div tw="flex gap-10 justify-around w-full ">
+      <div tw=" justify-around w-full lg:flex">
         {ShareTab.map((item, index) => (
           <ShareTabItem name={item.name} icon={item.icon} key={index} />
         ))}

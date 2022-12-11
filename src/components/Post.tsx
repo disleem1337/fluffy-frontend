@@ -9,7 +9,7 @@ import { BsShare } from "react-icons/bs";
 
 const Post = () => {
   return (
-    <div tw="flex flex-col px-8 py-4 bg-white rounded-lg  items-start">
+    <div tw="flex flex-col px-8 py-4 bg-white rounded-lg  items-start ">
       <Profiletab name="123...456" />
       <div>
         <p tw="text-sm max-w-xl leading-5">
@@ -18,7 +18,7 @@ const Post = () => {
         </p>
         <img src={Postimage} tw="w-full mt-4 " />
       </div>
-      <div tw="flex mt-2 items-center justify-between w-full">
+      <div tw="flex mt-2 items-center justify-between w-full cursor-pointer">
         <div tw="flex gap-8 items-center">
           <div tw="flex gap-2 items-center p-2 hover:bg-bgcolor rounded-lg">
             <FcLike size={24} />
