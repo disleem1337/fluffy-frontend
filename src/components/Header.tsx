@@ -57,7 +57,7 @@ const HeaderLink: Array<{
 
 const Header = () => {
   return (
-    <div tw="h-[70px] px-14 grid grid-cols-4 items-center justify-between gap-8 bg-white w-full">
+    <div tw="h-[70px] px-4 md:px-14 grid grid-cols-4 items-center justify-between gap-8 bg-white w-full">
       <div tw="hidden md:flex gap-3 items-center">
         <h2 tw="font-bold text-2xl">Fluffy</h2>
         <div tw="relative w-full">
@@ -86,7 +86,7 @@ const Header = () => {
           />
         </div>
       </div>
-      <div tw="flex gap-3 justify-around col-span-4 md:col-span-2">
+      <div tw="flex gap-3 justify-between col-span-4 md:col-span-2">
         {HeaderLink.map((link) => (
           <HeaderTab
             name={link.name}
@@ -97,7 +97,7 @@ const Header = () => {
           />
         ))}
       </div>
-      <Link to="/profile">
+      <Link to="/profile" tw="hidden md:block">
         <div tw="md:flex items-center justify-end gap-3 hidden">
           <Profiletab name="0xB9F6...112EF7" />
         </div>
@@ -118,7 +118,10 @@ const HeaderTab = ({ name, link, icon, active }: HeaderTabProps) => {
     <Link to={link}>
       <div tw="flex flex-col md:flex-row gap-2 justify-center items-center w-full  ">
         <div>{icon}</div>
-        <div css={[tw`text-sm`, active ? tw`font-extrabold` : tw`font-light`]}>
+        <div
+          tw="hidden md:block"
+          css={[tw`text-sm`, active ? tw`font-extrabold` : tw`font-light`]}
+        >
           {name}
         </div>
       </div>

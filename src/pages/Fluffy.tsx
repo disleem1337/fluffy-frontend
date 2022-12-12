@@ -19,7 +19,7 @@ function Fluffy() {
           <Post />
           <Post />
         </div>
-        <div tw="hidden md:flex flex-col">
+        <div tw="hidden md:flex flex-col sticky h-[fit-content] top-8">
           <Contacts title="Kişilerle Etkileşime Geç" />
           <Contacts title="Popüler Kişiler" />
         </div>

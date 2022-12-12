@@ -10,7 +10,7 @@ const Settings = () => {
   return (
     <BaseLayout>
       <div tw="px-4 md:px-14 py-6 grid grid-cols-4 gap-3 min-h-screen h-full">
-        <div tw="col-span-1 flex flex-col gap-2 sticky">
+        <div tw="col-span-1 flex flex-col gap-2 sticky h-[fit-content] top-8">
           <SummaryCard />
           <PrivacyTerms />
         </div>
