@@ -10,6 +10,9 @@ module.exports = {
         medium: "16px",
         large: "24px",
       },
+      margin: {
+        "-1/2": "-50%",
+      },
       colors: {
         bgcolor: "#F8F8F8",
       },

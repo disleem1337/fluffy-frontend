@@ -97,9 +97,11 @@ const Header = () => {
           />
         ))}
       </div>
-      <div tw="md:flex items-center justify-end gap-3 hidden">
-        <Profiletab name="123...456" />
-      </div>
+      <Link to="/profile">
+        <div tw="md:flex items-center justify-end gap-3 hidden">
+          <Profiletab name="0xB9F6...112EF7" />
+        </div>
+      </Link>
     </div>
   );
 };

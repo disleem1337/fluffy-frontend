@@ -10,7 +10,7 @@ import { BsShare } from "react-icons/bs";
 const Post = () => {
   return (
     <div tw="flex flex-col px-8 py-4 bg-white rounded-lg  items-start ">
-      <Profiletab name="123...456" />
+      <Profiletab name="0xB9F6...112EF7" />
       <div>
         <p tw="text-sm max-w-xl leading-5">
           Was great meeting up with Anna Ferguson and Dave Bishop at the
