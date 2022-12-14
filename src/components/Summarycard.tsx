@@ -50,8 +50,8 @@ const Coin: Array<{
 export const SummaryCard = () => {
   return (
     <div tw="hidden px-5 py-3 bg-white rounded-lg md:flex flex-col gap-2">
-      <div tw="flex items-center justify-between w-full">
-        <Profiletab name="0xB9F6...112EF7" />
+      <div tw="flex items-center gap-4 justify-between w-full">
+        <Profiletab full={true} name="0xB9F6...112EF7" />
         <FiSettings size={24} />
       </div>
       <hr tw="h-0.5 w-full bg-gray-200 border-0"></hr>

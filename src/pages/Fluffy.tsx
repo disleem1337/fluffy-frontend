@@ -18,6 +18,8 @@ function Fluffy() {
           <ShareStatus />
           <Post />
           <Post />
+          <Post />
+          <Post />
         </div>
         <div tw="hidden md:flex flex-col sticky h-[fit-content] top-8">
           <Contacts title="Kişilerle Etkileşime Geç" />

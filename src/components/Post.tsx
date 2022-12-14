@@ -6,11 +6,14 @@ import { FcLike } from "react-icons/fc";
 import { VscComment } from "react-icons/vsc";
 import { FiShare } from "react-icons/fi";
 import { BsShare } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 const Post = () => {
   return (
-    <div tw="flex flex-col px-8 py-4 bg-white rounded-lg  items-start ">
-      <Profiletab name="0xB9F6...112EF7" />
+    <div tw="flex flex-col px-4 py-4 bg-white rounded-lg gap-2  items-start ">
+      <Link to={"/profile"} tw="w-full">
+        <Profiletab full={true} name="0xB9F6...112EF7" />
+      </Link>
       <div>
         <p tw="text-sm max-w-xl leading-5">
           Was great meeting up with Anna Ferguson and Dave Bishop at the

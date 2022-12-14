@@ -99,7 +99,7 @@ const Header = () => {
       </div>
       <Link to="/profile" tw="hidden md:block">
         <div tw="md:flex items-center justify-end gap-3 hidden">
-          <Profiletab name="0xB9F6...112EF7" />
+          <Profiletab full={false} name="0xB9F6...112EF7" />
         </div>
       </Link>
     </div>
