@@ -1,15 +1,15 @@
 import { Navigate } from "react-router-dom";
 import React from "react";
-import useAuthStore from "../stores/auth";
+import { useFluffyWeb3 } from "../providers/fluffyWeb3Provider";
 
 function GuestRoute({ children }: { children: React.ReactNode }) {
-	const isAuth = useAuthStore((store) => store.auth);
+	const { isConnected } = useFluffyWeb3();
 
-	if (isAuth == null) {
+	if (isConnected == null) {
 		return <h1>Loading...</h1>;
 	}
 
-	if (isAuth) {
+	if (isConnected) {
 		return <Navigate to="/" />;
 	}
 

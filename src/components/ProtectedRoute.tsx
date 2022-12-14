@@ -1,14 +1,15 @@
 import { Navigate } from "react-router-dom";
-import useAuthStore from "../stores/auth";
+import { useFluffyWeb3 } from "../providers/fluffyWeb3Provider";
+import React from "react";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-	const isAuth = useAuthStore((store) => store.auth);
+	const { isConnected } = useFluffyWeb3();
 
-	if (isAuth == null) {
+	if (isConnected == null) {
 		return <h1>Loading...</h1>;
 	}
 
-	if (isAuth == false) {
+	if (isConnected == false) {
 		return <Navigate to="/login" />;
 	}
 

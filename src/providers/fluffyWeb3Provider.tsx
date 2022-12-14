@@ -1,11 +1,11 @@
 import { metaMask, hooks } from "../connectors/metamask";
-import { createContext, useEffect, useContext, useState } from "react";
+import { createContext, useEffect, useContext, useState, useRef } from "react";
 
 type TFluffyWeb3Context = {
 	account: string | undefined;
 	provider: any;
 	isConnecting: boolean;
-	isConnected: boolean;
+	isConnected: boolean | null;
 	connectWithMetaMask: () => void;
 };
 
@@ -23,33 +23,46 @@ function FluffyWeb3Provider({ children }: { children: React.ReactNode }) {
 	const chainId = hooks.useChainId();
 	const isActivating = hooks.useIsActivating();
 
-	const [isConnected, setIsConnected] = useState(false);
+	const [isConnected, setIsConnected] = useState<boolean | null>(null);
 	const [isConnecting, setIsConnecting] = useState(false);
+
+	const [triedEager, setTriedEager] = useState(false);
 
 	const connectWithMetaMask = async () => {
 		if (isConnected) return;
 		setIsConnecting(true);
 		try {
-			await metaMask.activate();
+			await metaMask.activate(56);
 		} catch (e) {
-			console.log(e);
 			setIsConnecting(false);
 		}
 	};
 
 	useEffect(() => {
+		if (!triedEager) return;
+		if (account && !chainId) return;
+		console.log("aa", account, chainId);
 		if (!account) {
 			setIsConnected(false);
 			return;
 		}
 
-		console.log("connected");
 		setIsConnected(true);
 		setIsConnecting(false);
-	}, [account, chainId]);
+	}, [account, chainId, triedEager]);
 
 	useEffect(() => {
-		metaMask.connectEagerly();
+		async function connect() {
+			try {
+				const ret = await metaMask.connectEagerly();
+			} catch (err) {
+				console.log(err);
+			}
+
+			setTriedEager(true);
+		}
+
+		connect();
 	}, []);
 
 	return (
