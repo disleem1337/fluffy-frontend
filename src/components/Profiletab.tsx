@@ -4,7 +4,7 @@ import tw from "twin.macro";
 
 type ProfiletabProps = {
   name: string;
-  full: boolean;
+  full?: boolean;
 };
 
 export const Profiletab = ({ name, full }: ProfiletabProps) => {
