@@ -10,7 +10,7 @@ function GuestRoute({ children }: { children: React.ReactNode }) {
 	}
 
 	if (isConnected) {
-		return <Navigate to="/" />;
+		return <Navigate replace={true} to="/" />;
 	}
 
 	return <>{children}</>;

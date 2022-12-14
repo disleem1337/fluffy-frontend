@@ -10,7 +10,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	}
 
 	if (isConnected == false) {
-		return <Navigate to="/login" />;
+		return <Navigate replace={true} to="/login" />;
 	}
 
 	return <>{children}</>;
