@@ -23,10 +23,6 @@ function LoginPage() {
         console.log("Ağ ekli değil, ağ eklenmeye çalışılıyor...");
         try {
           const addChainResult = await addChain(metaMask);
-
-          if (addChainResult) {
-            await connectWithMetaMask();
-          }
         } catch (e) {
           console.log(e);
         }

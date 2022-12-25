@@ -25,7 +25,7 @@ function FluffyWeb3Provider({ children }: { children: React.ReactNode }) {
   const account = hooks.useAccount();
   const provider = hooks.useProvider();
   const chainId = hooks.useChainId();
-  const isActivating = hooks.useIsActivating();
+  const isActive = hooks.useIsActive();
 
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -49,7 +49,7 @@ function FluffyWeb3Provider({ children }: { children: React.ReactNode }) {
 
   // MetaMask bağlantısı kurulduğunda, context'i günceller.
   useEffect(() => {
-    console.log(account, chainId, triedEager);
+    console.log(account, chainId, isActive, triedEager);
     if (!triedEager) return;
     if (account && !chainId) return;
 
