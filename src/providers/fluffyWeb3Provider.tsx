@@ -52,6 +52,10 @@ function FluffyWeb3Provider({ children }: { children: React.ReactNode }) {
     console.log(account, chainId, isActive, triedEager);
     if (!triedEager) return;
     if (account && !chainId) return;
+    if (!account && chainId) {
+      connectWithMetaMask();
+      return;
+    }
 
     if (!account || chainId !== 56) {
       setIsConnected(false);
