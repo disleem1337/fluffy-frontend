@@ -9,40 +9,40 @@ import GuestRoute from "./components/GuestRoute";
 import { metaMask, hooks } from "./connectors/metamask";
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: (
-			<ProtectedRoute>
-				<Fluffy />
-			</ProtectedRoute>
-		),
-	},
-	{
-		path: "/login",
-		element: (
-			<GuestRoute>
-				<LoginPage />
-			</GuestRoute>
-		),
-	},
-	{
-		path: "/profile",
-		element: (
-			<ProtectedRoute>
-				<Settings />
-			</ProtectedRoute>
-		),
-	},
+  {
+    path: "/",
+    element: (
+      <GuestRoute>
+        <Fluffy />
+      </GuestRoute>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      <GuestRoute>
+        <LoginPage />
+      </GuestRoute>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <GuestRoute>
+        <Settings />
+      </GuestRoute>
+    ),
+  },
 ]);
 
 function App() {
-	const provider = hooks.useProvider();
+  const provider = hooks.useProvider();
 
-	return (
-		<div tw="font-sans">
-			<RouterProvider router={router} />
-		</div>
-	);
+  return (
+    <div tw="font-sans">
+      <RouterProvider router={router} />
+    </div>
+  );
 }
 
 export default App;
