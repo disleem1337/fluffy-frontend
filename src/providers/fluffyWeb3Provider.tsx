@@ -2,88 +2,104 @@ import { metaMask, hooks } from "../connectors/metamask";
 import { createContext, useEffect, useContext, useState, useRef } from "react";
 
 type TFluffyWeb3Context = {
-	account: string | undefined;
-	provider: any;
-	isConnecting: boolean;
-	isConnected: boolean | null;
-	connectWithMetaMask: () => void;
+  account: string | undefined;
+  provider: any;
+  isConnecting: boolean;
+  isConnected: boolean | null;
+  connectWithMetaMask: () => Promise<TConnectResult>;
 };
 
 export const FluffyWeb3Context = createContext<TFluffyWeb3Context>({
-	account: undefined,
-	provider: null,
-	isConnecting: false,
-	isConnected: false,
-	connectWithMetaMask: () => {},
+  account: undefined,
+  provider: null,
+  isConnecting: false,
+  isConnected: false,
+  connectWithMetaMask: () => Promise.resolve({ success: false }),
 });
 
+type TConnectResult = {
+  success: boolean;
+  error?: any;
+};
 function FluffyWeb3Provider({ children }: { children: React.ReactNode }) {
-	const account = hooks.useAccount();
-	const provider = hooks.useProvider();
-	const chainId = hooks.useChainId();
-	const isActivating = hooks.useIsActivating();
+  const account = hooks.useAccount();
+  const provider = hooks.useProvider();
+  const chainId = hooks.useChainId();
+  const isActive = hooks.useIsActive();
 
-	const [isConnected, setIsConnected] = useState<boolean | null>(null);
-	const [isConnecting, setIsConnecting] = useState(false);
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
 
-	const [triedEager, setTriedEager] = useState(false);
+  const [triedEager, setTriedEager] = useState(false);
 
-	const connectWithMetaMask = async () => {
-		if (isConnected) return;
-		setIsConnecting(true);
-		try {
-			await metaMask.activate(56);
-		} catch (e) {
-			setIsConnecting(false);
-		}
-	};
+  // MetaMask bağlantısını kurar.
+  const connectWithMetaMask = async (): Promise<TConnectResult> => {
+    if (isConnected) return { success: false, error: "Already connected." };
+    setIsConnecting(true);
+    try {
+      await metaMask.activate(56);
 
-	useEffect(() => {
-		if (!triedEager) return;
-		if (account && !chainId) return;
-		console.log("aa", account, chainId);
-		if (!account) {
-			setIsConnected(false);
-			return;
-		}
+      return { success: true };
+    } catch (e) {
+      setIsConnecting(false);
+      console.log(metaMask);
+      return { error: e, success: false };
+    }
+  };
 
-		setIsConnected(true);
-		setIsConnecting(false);
-	}, [account, chainId, triedEager]);
+  // MetaMask bağlantısı kurulduğunda, context'i günceller.
+  useEffect(() => {
+    console.log(account, chainId, isActive, triedEager);
+    if (!triedEager) return;
+    if (account && !chainId) return;
+    if (!account && chainId) {
+      connectWithMetaMask();
+      return;
+    }
 
-	useEffect(() => {
-		async function connect() {
-			try {
-				const ret = await metaMask.connectEagerly();
-			} catch (err) {
-				console.log(err);
-			}
+    if (!account || chainId !== 56) {
+      setIsConnected(false);
+      return;
+    }
 
-			setTriedEager(true);
-		}
+    setIsConnected(true);
+    setIsConnecting(false);
+  }, [account, chainId, triedEager]);
 
-		connect();
-	}, []);
+  // Sayfa yüklendiğinde, MetaMask bağlantısını otomatik olarak kurmaya çalışır.
+  useEffect(() => {
+    async function connect() {
+      try {
+        const ret = await metaMask.connectEagerly();
+      } catch (err) {
+        console.log(err);
+      }
 
-	return (
-		<FluffyWeb3Context.Provider
-			value={{
-				account,
-				provider,
-				isConnecting,
-				isConnected,
-				connectWithMetaMask,
-			}}
-		>
-			{children}
-		</FluffyWeb3Context.Provider>
-	);
+      setTriedEager(true);
+    }
+
+    connect();
+  }, []);
+
+  return (
+    <FluffyWeb3Context.Provider
+      value={{
+        account,
+        provider,
+        isConnecting,
+        isConnected,
+        connectWithMetaMask,
+      }}
+    >
+      {children}
+    </FluffyWeb3Context.Provider>
+  );
 }
 
 export const useFluffyWeb3 = () => {
-	const context = useContext(FluffyWeb3Context);
+  const context = useContext(FluffyWeb3Context);
 
-	return context;
+  return context;
 };
 
 export default FluffyWeb3Provider;
