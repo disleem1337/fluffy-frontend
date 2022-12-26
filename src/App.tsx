@@ -12,9 +12,9 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <GuestRoute>
+      <ProtectedRoute>
         <Fluffy />
-      </GuestRoute>
+      </ProtectedRoute>
     ),
   },
   {
@@ -28,9 +28,9 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: (
-      <GuestRoute>
+      <ProtectedRoute>
         <Settings />
-      </GuestRoute>
+      </ProtectedRoute>
     ),
   },
 ]);
