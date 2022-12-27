@@ -7,6 +7,8 @@ import "twin.macro";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import { metaMask, hooks } from "./connectors/metamask";
+import Chat from "./pages/Chat";
+import Apps from "./pages/Apps";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +16,22 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <Fluffy />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/chat",
+    element: (
+      <ProtectedRoute>
+        <Chat />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/apps",
+    element: (
+      <ProtectedRoute>
+        <Apps />
       </ProtectedRoute>
     ),
   },
