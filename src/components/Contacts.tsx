@@ -37,7 +37,7 @@ const Contacts = ({ title }: ProfiletabProps) => {
     <div tw="px-5 py-3 bg-white rounded-lg flex flex-col gap-2 mb-4">
       <div>{title}</div>
       <hr tw="h-0.5 w-full bg-gray-200 border-0"></hr>
-      <div tw="w-full flex flex-col gap-2 h-full rounded-md bg-gray-100 p-2">
+      <div tw="w-full flex flex-col gap-2 h-full rounded-md p-2">
         <div tw="flex w-full gap-4 items-center">
           <img
             src="https://i.pravatar.cc/150?img=1"
@@ -58,7 +58,7 @@ const Contacts = ({ title }: ProfiletabProps) => {
           </Button>
         </div>
       </div>
-      <div tw="w-full flex flex-col gap-2 h-full rounded-md bg-gray-100 p-2">
+      <div tw="w-full flex flex-col gap-2 h-full rounded-md p-2">
         <div tw="flex w-full gap-4 items-center">
           <img
             src="https://i.pravatar.cc/150?img=1"
