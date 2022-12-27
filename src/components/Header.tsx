@@ -1,14 +1,6 @@
 import React from "react";
 import tw from "twin.macro";
 import {
-  AiOutlineHome,
-  AiFillHome,
-  AiOutlineNotification,
-  AiFillNotification,
-  AiOutlineAppstoreAdd,
-  AiFillAppstore,
-} from "react-icons/ai";
-import {
   RiHomeLine,
   RiHomeFill,
   RiUser3Line,
@@ -109,7 +101,7 @@ const Header = () => {
               fillIcon={link.fillIcon}
             />
           ) : (
-            <span>Ah lan</span>
+            <button>{link.icon}</button>
           )
         )}
       </div>
@@ -131,11 +123,9 @@ type HeaderTabProps = {
 };
 
 const HeaderTab = ({ name, link, icon, fillIcon }: HeaderTabProps) => {
-  console.log(link);
   return (
     <NavLink to={link}>
       {({ isActive }) => {
-        console.log(link, isActive);
         return (
           <div tw="flex flex-col md:flex-row gap-2 justify-center items-center w-full relative">
             <div>{isActive && fillIcon ? fillIcon : icon}</div>

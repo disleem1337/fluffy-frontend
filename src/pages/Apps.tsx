@@ -15,10 +15,6 @@ function Apps() {
           <PrivacyTerms />
         </div>
         <div tw="col-span-4 md:col-span-2 flex flex-col gap-4"></div>
-        <div tw="hidden md:flex flex-col sticky h-[fit-content] top-8">
-          <Contacts title="Kişilerle Etkileşime Geç" />
-          <Contacts title="Popüler Kişiler" />
-        </div>
       </div>
     </BaseLayout>
   );
