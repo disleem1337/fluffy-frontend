@@ -5,6 +5,10 @@ import { SummaryCard } from "../components/Summarycard";
 import PrivacyTerms from "../components/privacy";
 import ProfileBanner from "../components/ProfileBanner";
 import ProfileInfo from "../components/ProfileInfo";
+import Contacts from "../components/Contacts";
+import Post from "../components/Post";
+import Postimage from "../assets/post.png";
+import PostimageTwo from "../assets/post2.jpg";
 
 const Settings = () => {
   return (
@@ -14,9 +18,15 @@ const Settings = () => {
           <SummaryCard />
           <PrivacyTerms />
         </div>
-        <div tw="col-span-4 md:col-span-3">
+        <div tw="col-span-2 flex flex-col md:col-span-2 gap-2">
           <ProfileBanner />
           <ProfileInfo />
+          <Post postImage={Postimage} />
+          <Post postImage={PostimageTwo} />
+        </div>
+        <div tw="col-span-1 md:flex flex-col sticky h-[fit-content] top-8">
+          <Contacts title="Kişilerle Etkileşime Geç" />
+          <Contacts title="Popüler Kişiler" />
         </div>
       </div>
     </BaseLayout>

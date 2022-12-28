@@ -8,7 +8,11 @@ import { FiShare } from "react-icons/fi";
 import { BsShare } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
-const Post = () => {
+type PostProps = {
+  postImage: string;
+};
+
+const Post = ({ postImage }: PostProps) => {
   return (
     <div tw="flex flex-col px-4 py-4 bg-white rounded-lg gap-2  items-start ">
       <Link to={"/profile"} tw="w-full">
@@ -19,7 +23,7 @@ const Post = () => {
           Was great meeting up with Anna Ferguson and Dave Bishop at the
           breafast talk! 🍕 #breakfast
         </p>
-        <img src={Postimage} tw="w-full mt-4 " />
+        <img src={postImage} tw="w-full mt-4 " />
       </div>
       <div tw="flex mt-2 items-center justify-between w-full cursor-pointer">
         <div tw="flex gap-8 items-center">
