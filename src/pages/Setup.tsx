@@ -74,6 +74,7 @@ function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
     "https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png"
   );
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,18 +89,43 @@ function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
     }
   };
 
+  const onChangeImage = (e: any) => {
+    const file = e.target.files[0];
+    const fr = new FileReader();
+    fr.onload = () => {
+      const url = fr.result as string;
+      console.log(url);
+      setImage(url);
+    };
+    fr.readAsDataURL(file);
+  };
+
   return (
     <form tw="flex-1" onSubmit={onSubmit}>
       <h1 tw="text-center text-2xl font-medium">İstersen resim yükle</h1>
+      <input
+        onInput={onChangeImage}
+        accept=".jpg, .jpeg, .png"
+        ref={inputRef}
+        type="file"
+        tw="hidden"
+      />
       <div tw="mt-8 flex flex-col gap-4 items-center">
-        <img src={image} tw="w-32 h-32 rounded-full" />
-        <Button type="button" variant={ButtonVariant.SECONDARY}>
+        <img
+          src={image}
+          tw="w-32 h-32 rounded-full object-center object-cover"
+        />
+        <Button
+          type="button"
+          variant={ButtonVariant.SECONDARY}
+          onClick={() => inputRef.current?.click()}
+        >
           Resim seç
         </Button>
       </div>
       <div tw="mt-4">
         <Button fullWidth size={ButtonSize.LARGE} disabled={isCheckingUsername}>
-          {isCheckingUsername ? "Kullanıcı adı kontrol ediliyor..." : "Devam"}
+          {isCheckingUsername ? "Resim yükleniyor..." : "Bitir"}
         </Button>
       </div>
     </form>
@@ -179,18 +205,23 @@ function Setup() {
             </motion.div>
           </AnimatePresence>
           <div tw="mt-auto flex justify-center gap-2 relative">
-            <span tw="absolute left-0" onClick={goBack}>
-              Back
-            </span>
+            <motion.button
+              animate={{
+                opacity: step === 0 ? 0 : 1,
+                visibility: step === 0 ? "hidden" : "visible",
+              }}
+              tw="absolute left-0 top-1/2 -translate-y-1/2"
+              onClick={goBack}
+            >
+              Geri
+            </motion.button>
             {steps.map((_, index) => (
-              <div css={[tw`p-1 border rounded-full`]}>
-                <div
-                  css={[
-                    tw`w-4 h-4 rounded-full transition`,
-                    step >= index && tw`bg-black`,
-                  ]}
-                ></div>
-              </div>
+              <div
+                css={[
+                  tw`border w-2 h-2 rounded-full transition`,
+                  step >= index && tw`bg-black`,
+                ]}
+              ></div>
             ))}
           </div>
         </motion.div>
