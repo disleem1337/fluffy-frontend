@@ -22,11 +22,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/setup",
-    element: (
-      <ProtectedRoute>
-        <Setup />
-      </ProtectedRoute>
-    ),
+    element: <Setup />,
   },
   {
     path: "/chat",
