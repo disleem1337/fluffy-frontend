@@ -9,12 +9,18 @@ import Contacts from "../components/Contacts";
 function Apps() {
   return (
     <BaseLayout>
-      <div tw="grid grid-cols-4 gap-3">
-        <div tw="col-span-1 hidden md:flex flex-col gap-2 sticky top-8 h-[fit-content]">
+      <div tw="grid grid-cols-4 gap-3 h-full">
+        <div tw="col-span-1 hidden md:flex flex-col gap-2 sticky h-[fit-content] top-8">
           <SummaryCard />
           <PrivacyTerms />
         </div>
-        <div tw="col-span-4 md:col-span-2 flex flex-col gap-4"></div>
+        <div tw="col-span-2 flex flex-col md:col-span-2 gap-2">
+          <h1>App Page</h1>
+        </div>
+        <div tw="col-span-1 md:flex flex-col sticky h-[fit-content] top-8">
+          <Contacts title="Kişilerle Etkileşime Geç" />
+          <Contacts title="Popüler Kişiler" />
+        </div>
       </div>
     </BaseLayout>
   );
