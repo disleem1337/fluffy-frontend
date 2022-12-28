@@ -9,14 +9,23 @@ import GuestRoute from "./components/GuestRoute";
 import { metaMask, hooks } from "./connectors/metamask";
 import Chat from "./pages/Chat";
 import Apps from "./pages/Apps";
+import Setup from "./pages/Setup";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <GuestRoute>
+      <ProtectedRoute>
         <Fluffy />
-      </GuestRoute>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/setup",
+    element: (
+      <ProtectedRoute>
+        <Setup />
+      </ProtectedRoute>
     ),
   },
   {
@@ -46,9 +55,9 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: (
-      <GuestRoute>
+      <ProtectedRoute>
         <Settings />
-      </GuestRoute>
+      </ProtectedRoute>
     ),
   },
 ]);

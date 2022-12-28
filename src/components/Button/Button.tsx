@@ -70,6 +70,10 @@ type ButtonProps = {
    * İsteğe bağlı olay dinleyici
    */
   onClick?: () => void;
+  /**
+   * Butonun ebeveyninin genişğini kaplaması
+   */
+  fullWidth?: boolean;
 };
 
 /**
@@ -83,6 +87,7 @@ export function Button({
   children,
   leftFlat = false,
   rightFlat = false,
+  fullWidth = false,
   ...props
 }: ButtonProps) {
   const styles = [
@@ -92,6 +97,7 @@ export function Button({
     borderRadiusVariants[borderRadius],
     leftFlat && tw`rounded-l-none border-l-0`,
     rightFlat && tw`rounded-r-none border-r-0`,
+    fullWidth && tw`w-full`,
   ];
   return (
     <button css={styles} {...props} disabled={disabled}>
