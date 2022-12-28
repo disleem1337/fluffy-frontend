@@ -9,6 +9,7 @@ import GuestRoute from "./components/GuestRoute";
 import { metaMask, hooks } from "./connectors/metamask";
 import Chat from "./pages/Chat";
 import Apps from "./pages/Apps";
+import Setup from "./pages/Setup";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <Fluffy />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/setup",
+    element: (
+      <ProtectedRoute>
+        <Setup />
       </ProtectedRoute>
     ),
   },
