@@ -3,7 +3,7 @@ import tw from "twin.macro";
 
 const ProfileInfo = () => {
   return (
-    <div tw="w-full md:h-[300px] bg-[#808080] px-4 py-8">
+    <div tw="w-full -translate-y-4 md:h-[300px] bg-[#808080] px-4 py-8">
       <div tw="md:grid md:grid-cols-2 flex flex-col gap-6 md:gap-2 text-white">
         <div tw="grid-cols-1">
           <h1 tw="font-bold text-lg mb-3">
