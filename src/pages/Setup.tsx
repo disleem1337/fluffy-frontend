@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import LoginSplash from "../assets/login-splash.jpg";
 import tw from "twin.macro";
-import { Button, ButtonSize } from "../components/Button/Button";
+import { Button, ButtonSize, ButtonVariant } from "../components/Button/Button";
 import { AnimatePresence, motion } from "framer-motion";
 
 async function checkUsername(username: string) {
@@ -32,7 +32,7 @@ function Step1({ onComplete }: { onComplete: (data: Object) => void }) {
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form tw="flex-1" onSubmit={onSubmit}>
       <h1 tw="text-center text-2xl font-medium">Hadi başlayalım</h1>
       <div tw="mt-12 flex flex-col gap-4">
         <div>
@@ -70,6 +70,9 @@ function Step1({ onComplete }: { onComplete: (data: Object) => void }) {
 }
 
 function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
+  const [image, setImage] = useState(
+    "https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png"
+  );
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -86,25 +89,15 @@ function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <h1 tw="text-center text-2xl font-medium">Devaaaaaaam</h1>
-      <div tw="mt-12 flex flex-col gap-4">
-        <div>
-          <label>Ad</label>
-          <input type="text" tw="w-full border p-2 rounded" />
-        </div>
-        <div>
-          <label>Kullanıcı Adı</label>
-          <div tw="relative">
-            <span tw="absolute top-1/2 left-2 -translate-y-1/2 pointer-events-none">
-              @
-            </span>
-            <input type="text" tw="w-full border p-2 pl-6 rounded" />
-          </div>
-        </div>
+    <form tw="flex-1" onSubmit={onSubmit}>
+      <h1 tw="text-center text-2xl font-medium">İstersen resim yükle</h1>
+      <div tw="mt-8 flex flex-col gap-4 items-center">
+        <img src={image} tw="w-32 h-32 rounded-full" />
+        <Button type="button" variant={ButtonVariant.SECONDARY}>
+          Resim seç
+        </Button>
       </div>
-
-      <div tw="mt-8">
+      <div tw="mt-4">
         <Button fullWidth size={ButtonSize.LARGE} disabled={isCheckingUsername}>
           {isCheckingUsername ? "Kullanıcı adı kontrol ediliyor..." : "Devam"}
         </Button>
@@ -113,11 +106,27 @@ function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
   );
 }
 
+const variants = {
+  enter: (direction: number) => {
+    return {
+      x: direction > 0 ? 1000 : -1000,
+    };
+  },
+  animate: {
+    x: 0,
+  },
+  exit: (direction: number) => {
+    console.log(direction);
+    return {
+      x: direction < 0 ? 1000 : -1000,
+    };
+  },
+};
+
 const steps = [Step1, Step2];
 function Setup() {
-  const [step, setStep] = useState(0);
+  const [[step, direction], setStep] = useState([0, 0]);
   const [formData, setFormData] = useState({});
-  const lastStep = useRef(-1);
 
   const CurrentStep = steps[step];
 
@@ -126,17 +135,17 @@ function Setup() {
 
     if (step === steps.length - 1) {
     } else {
-      lastStep.current = step;
-      setStep(step + 1);
+      setStep((prev) => [prev[0] + 1, 1]);
     }
   };
 
   const goBack = () => {
     if (step === 0) return;
 
-    lastStep.current = step;
-    setStep(step - 1);
+    setStep((prev) => [prev[0] - 1, -1]);
   };
+
+  console.log("lastStep: " + direction, "step: " + step);
   return (
     <div tw="min-h-screen relative flex justify-center items-center">
       <img
@@ -146,38 +155,33 @@ function Setup() {
 
       <div tw="p-6 z-10 flex-1 flex justify-center">
         <motion.div
-          tw="rounded-xl bg-white z-10 flex-1 max-w-md w-full p-4 h-96 overflow-hidden"
+          tw="rounded-xl bg-white z-10 flex-1 max-w-md w-full p-4 h-96 overflow-hidden relative flex flex-col"
           initial={{
             opacity: 0,
           }}
           animate={{ opacity: 1 }}
         >
-          <AnimatePresence>
+          <AnimatePresence initial={false} mode="popLayout" custom={direction}>
             <motion.div
-              initial={{
-                x: step > lastStep.current ? "100%" : "-100%",
-              }}
-              animate={{
-                x: 0,
-              }}
-              exit={{
-                x: step > lastStep.current ? "100%" : "-100%",
-              }}
+              variants={variants}
+              custom={direction}
+              initial="enter"
+              animate="animate"
+              exit="exit"
               transition={{
-                duration: 5,
+                duration: 1,
+                delayChildren: 0.4,
               }}
+              tw="flex-1 flex"
               key={step}
             >
-              {
-                <CurrentStep
-                  key={step}
-                  onComplete={(data) => onCompleteStep(step, data)}
-                />
-              }
+              <CurrentStep onComplete={(data) => onCompleteStep(step, data)} />
             </motion.div>
           </AnimatePresence>
-          <div tw="mt-4 flex justify-center gap-2">
-            <span onClick={goBack}>Back</span>
+          <div tw="mt-auto flex justify-center gap-2 relative">
+            <span tw="absolute left-0" onClick={goBack}>
+              Back
+            </span>
             {steps.map((_, index) => (
               <div css={[tw`p-1 border rounded-full`]}>
                 <div

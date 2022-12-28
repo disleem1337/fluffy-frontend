@@ -12,9 +12,7 @@ root.render(
   <>
     <GlobalStyles />
     <FluffyWeb3Provider>
-      <AnimateSharedLayout>
-        <App />
-      </AnimateSharedLayout>
+      <App />
     </FluffyWeb3Provider>
   </>
 );

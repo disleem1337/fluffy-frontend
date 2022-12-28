@@ -74,6 +74,10 @@ type ButtonProps = {
    * Butonun ebeveyninin genişğini kaplaması
    */
   fullWidth?: boolean;
+  /**
+   * Butonun tipini belirler
+   */
+  type?: "button" | "submit" | "reset";
 };
 
 /**
@@ -88,6 +92,7 @@ export function Button({
   leftFlat = false,
   rightFlat = false,
   fullWidth = false,
+  type = "submit",
   ...props
 }: ButtonProps) {
   const styles = [
@@ -100,7 +105,7 @@ export function Button({
     fullWidth && tw`w-full`,
   ];
   return (
-    <button css={styles} {...props} disabled={disabled}>
+    <button css={styles} {...props} type={type} disabled={disabled}>
       {children}
     </button>
   );
