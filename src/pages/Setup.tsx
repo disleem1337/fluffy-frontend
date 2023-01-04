@@ -142,7 +142,6 @@ const variants = {
     x: 0,
   },
   exit: (direction: number) => {
-    console.log(direction);
     return {
       x: direction < 0 ? 1000 : -1000,
     };
@@ -171,7 +170,6 @@ function Setup() {
     setStep((prev) => [prev[0] - 1, -1]);
   };
 
-  console.log("lastStep: " + direction, "step: " + step);
   return (
     <div tw="min-h-screen relative flex justify-center items-center">
       <img

@@ -9,7 +9,7 @@ type TFluffyWeb3Context = {
   connectWithMetaMask: () => Promise<TConnectResult>;
 };
 
-export const FluffyWeb3Context = createContext<TFluffyWeb3Context>({
+const FluffyWeb3Context = createContext<TFluffyWeb3Context>({
   account: undefined,
   provider: null,
   isConnecting: false,
@@ -21,6 +21,7 @@ type TConnectResult = {
   success: boolean;
   error?: any;
 };
+
 function FluffyWeb3Provider({ children }: { children: React.ReactNode }) {
   const account = hooks.useAccount();
   const provider = hooks.useProvider();
@@ -49,7 +50,6 @@ function FluffyWeb3Provider({ children }: { children: React.ReactNode }) {
 
   // MetaMask bağlantısı kurulduğunda, context'i günceller.
   useEffect(() => {
-    console.log(account, chainId, isActive, triedEager);
     if (!triedEager) return;
     if (account && !chainId) return;
     if (!account && chainId) {
