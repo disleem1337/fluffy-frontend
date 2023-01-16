@@ -10,25 +10,38 @@ import { metaMask, hooks } from "./connectors/metamask";
 import Chat from "./pages/Chat";
 import Apps from "./pages/Apps";
 import Setup from "./pages/Setup";
+import OnlyNotSetupRoute from "./components/OnlyNotSetupRoute";
+import OnlySetupRoute from "./components/OnlySetupRoute";
+import { Toaster } from "react-hot-toast";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <ProtectedRoute>
-        <Fluffy />
+        <OnlySetupRoute>
+          <Fluffy />
+        </OnlySetupRoute>
       </ProtectedRoute>
     ),
   },
   {
     path: "/setup",
-    element: <Setup />,
+    element: (
+      <ProtectedRoute>
+        <OnlyNotSetupRoute>
+          <Setup />
+        </OnlyNotSetupRoute>
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/chat",
     element: (
       <ProtectedRoute>
-        <Chat />
+        <OnlySetupRoute>
+          <Chat />
+        </OnlySetupRoute>
       </ProtectedRoute>
     ),
   },
@@ -36,7 +49,9 @@ const router = createBrowserRouter([
     path: "/apps",
     element: (
       <ProtectedRoute>
-        <Apps />
+        <OnlySetupRoute>
+          <Apps />
+        </OnlySetupRoute>
       </ProtectedRoute>
     ),
   },
@@ -52,18 +67,19 @@ const router = createBrowserRouter([
     path: "/profile",
     element: (
       <ProtectedRoute>
-        <Settings />
+        <OnlySetupRoute>
+          <Settings />
+        </OnlySetupRoute>
       </ProtectedRoute>
     ),
   },
 ]);
 
 function App() {
-  const provider = hooks.useProvider();
-
   return (
     <div tw="font-sans">
       <RouterProvider router={router} />
+      <Toaster position="bottom-center" />
     </div>
   );
 }

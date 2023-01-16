@@ -3,6 +3,9 @@ import LoginSplash from "../assets/login-splash.jpg";
 import tw from "twin.macro";
 import { Button, ButtonSize, ButtonVariant } from "../components/Button/Button";
 import { AnimatePresence, motion } from "framer-motion";
+import { setup } from "../services/user";
+import { useFluffyAuth } from "../providers/fluffyAuthProvider";
+import { toast } from "react-hot-toast";
 
 async function checkUsername(username: string) {
   return new Promise((resolve) => {
@@ -15,6 +18,8 @@ async function checkUsername(username: string) {
 function Step1({ onComplete }: { onComplete: (data: Object) => void }) {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -24,7 +29,7 @@ function Step1({ onComplete }: { onComplete: (data: Object) => void }) {
     try {
       await checkUsername(username);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      onComplete({ name, username });
+      onComplete({ name, username, email });
     } catch (err) {
     } finally {
       setIsCheckingUsername(false);
@@ -32,7 +37,7 @@ function Step1({ onComplete }: { onComplete: (data: Object) => void }) {
   };
 
   return (
-    <form tw="flex-1" onSubmit={onSubmit}>
+    <form tw="flex-1 flex flex-col" onSubmit={onSubmit}>
       <h1 tw="text-center text-2xl font-medium">Hadi başlayalım</h1>
       <div tw="mt-12 flex flex-col gap-4">
         <div>
@@ -42,6 +47,9 @@ function Step1({ onComplete }: { onComplete: (data: Object) => void }) {
             onChange={(e) => setName(e.target.value)}
             type="text"
             tw="w-full border p-2 rounded"
+            required
+            minLength={3}
+            maxLength={64}
           />
         </div>
         <div>
@@ -55,12 +63,30 @@ function Step1({ onComplete }: { onComplete: (data: Object) => void }) {
               onChange={(e) => setUsername(e.target.value)}
               type="text"
               tw="w-full border p-2 pl-6 rounded"
+              required
+              minLength={3}
+              maxLength={64}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label>Eposta</label>
+          <div tw="relative">
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              tw="w-full border p-2 rounded"
+              required
+              minLength={3}
+              maxLength={64}
             />
           </div>
         </div>
       </div>
 
-      <div tw="mt-8">
+      <div tw="mt-auto mb-4">
         <Button fullWidth size={ButtonSize.LARGE} disabled={isCheckingUsername}>
           {isCheckingUsername ? "Kullanıcı adı kontrol ediliyor..." : "Devam"}
         </Button>
@@ -101,7 +127,7 @@ function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
   };
 
   return (
-    <form tw="flex-1" onSubmit={onSubmit}>
+    <form tw="flex-1 flex flex-col" onSubmit={onSubmit}>
       <h1 tw="text-center text-2xl font-medium">İstersen resim yükle</h1>
       <input
         onInput={onChangeImage}
@@ -123,7 +149,7 @@ function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
           Resim seç
         </Button>
       </div>
-      <div tw="mt-4">
+      <div tw="mt-auto mb-4">
         <Button fullWidth size={ButtonSize.LARGE} disabled={isCheckingUsername}>
           {isCheckingUsername ? "Resim yükleniyor..." : "Bitir"}
         </Button>
@@ -149,16 +175,33 @@ const variants = {
 };
 
 const steps = [Step1, Step2];
+
 function Setup() {
   const [[step, direction], setStep] = useState([0, 0]);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<any[]>([]);
+
+  const { token, refreshUser } = useFluffyAuth();
 
   const CurrentStep = steps[step];
 
-  const onCompleteStep = (step: number, data: Object) => {
-    setFormData((prev) => ({ ...prev, [step]: data }));
+  const onCompleteStep = async (step: number, data: Object) => {
+    setFormData((prev) => {
+      let a = [...prev];
+      a[step] = data;
+      return a;
+    });
 
     if (step === steps.length - 1) {
+      const data = formData.reduce((prev, curr) => ({ ...prev, ...curr }), {});
+
+      try {
+        const resp = await setup(token as string, data);
+        toast.success("Başarıyla kayıt oldunuz!");
+
+        await refreshUser();
+      } catch (err) {
+        toast.error((err as any).message);
+      }
     } else {
       setStep((prev) => [prev[0] + 1, 1]);
     }
@@ -179,7 +222,7 @@ function Setup() {
 
       <div tw="p-6 z-10 flex-1 flex justify-center">
         <motion.div
-          tw="rounded-xl bg-white z-10 flex-1 max-w-md w-full p-4 h-96 overflow-hidden relative flex flex-col"
+          tw="rounded-xl bg-white z-10 flex-1 max-w-md w-full p-4 h-[28rem] overflow-hidden relative flex flex-col"
           initial={{
             opacity: 0,
           }}
@@ -215,6 +258,7 @@ function Setup() {
             </motion.button>
             {steps.map((_, index) => (
               <div
+                key={index}
                 css={[
                   tw`border w-2 h-2 rounded-full transition`,
                   step >= index && tw`bg-black`,

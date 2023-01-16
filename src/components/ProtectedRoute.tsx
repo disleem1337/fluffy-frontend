@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
-import { useFluffyWeb3 } from "../providers/fluffyWeb3Provider";
 import React from "react";
 import Loading from "../pages/Loading";
+import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isConnected } = useFluffyWeb3();
+  const { isConnected } = useFluffyAuth();
 
   if (isConnected == null) {
     return <Loading />;

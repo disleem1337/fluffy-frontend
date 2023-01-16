@@ -3,18 +3,14 @@ import React from "react";
 import Loading from "../pages/Loading";
 import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 
-function GuestRoute({ children }: { children: React.ReactNode }) {
-  const { isConnected } = useFluffyAuth();
+function OnlyNotSetupRoute({ children }: { children: React.ReactNode }) {
+  const { user } = useFluffyAuth();
 
-  if (isConnected == null) {
-    return <Loading />;
-  }
-
-  if (isConnected) {
+  if (user.setup) {
     return <Navigate replace={true} to="/" />;
   }
 
   return <>{children}</>;
 }
 
-export default GuestRoute;
+export default OnlyNotSetupRoute;
