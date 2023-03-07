@@ -14,14 +14,13 @@ export async function me(token: string) {
   }
 }
 
-export async function setup(token: string, data: any) {
+export async function setup(token: string, data: FormData) {
   const response = await fetch(`${import.meta.env.VITE_API_URL}/user/setup`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       Authorization: token,
     },
-    body: JSON.stringify(data),
+    body: data,
   });
 
   if (response.ok) {

@@ -96,9 +96,11 @@ function Step1({ onComplete }: { onComplete: (data: Object) => void }) {
 }
 
 function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
-  const [image, setImage] = useState(
-    "https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png"
-  );
+  const defaultImage =
+    "https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png";
+
+  const [image, setImage] = useState<string>("");
+  const [imageFile, setImageFile] = useState(null);
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -108,7 +110,7 @@ function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      onComplete({});
+      onComplete({ image: imageFile });
     } catch (err) {
     } finally {
       setIsCheckingUsername(false);
@@ -118,10 +120,11 @@ function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
   const onChangeImage = (e: any) => {
     const file = e.target.files[0];
     const fr = new FileReader();
+
     fr.onload = () => {
       const url = fr.result as string;
-      console.log(url);
       setImage(url);
+      setImageFile(file);
     };
     fr.readAsDataURL(file);
   };
@@ -138,7 +141,7 @@ function Step2({ onComplete }: { onComplete: (data: Object) => void }) {
       />
       <div tw="mt-8 flex flex-col gap-4 items-center">
         <img
-          src={image}
+          src={image || defaultImage}
           tw="w-32 h-32 rounded-full object-center object-cover"
         />
         <Button
@@ -185,17 +188,23 @@ function Setup() {
   const CurrentStep = steps[step];
 
   const onCompleteStep = async (step: number, data: Object) => {
-    setFormData((prev) => {
-      let a = [...prev];
-      a[step] = data;
-      return a;
-    });
+    let newFormdata = [...formData];
+    newFormdata[step] = data;
+    setFormData(newFormdata);
 
     if (step === steps.length - 1) {
-      const data = formData.reduce((prev, curr) => ({ ...prev, ...curr }), {});
+      const data = newFormdata.reduce(
+        (prev, curr) => ({ ...prev, ...curr }),
+        {}
+      );
 
+      const fd = new FormData();
+      Object.entries(data).forEach(([k, v]: any) => {
+        fd.append(k, v);
+      });
+      fd.forEach((val) => console.log(val));
       try {
-        const resp = await setup(token as string, data);
+        const resp = await setup(token as string, fd);
         toast.success("Başarıyla kayıt oldunuz!");
 
         await refreshUser();

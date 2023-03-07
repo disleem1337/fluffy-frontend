@@ -1,9 +1,11 @@
 import React from "react";
 import tw from "twin.macro";
 import LoginSplash from "../assets/login-splash.jpg";
+import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 import { Button, ButtonVariant, BorderRadius } from "./Button/Button";
 
 export const SummaryCard = () => {
+  const { user } = useFluffyAuth();
   return (
     <div tw="hidden md:flex flex-col rounded-md bg-white">
       {/* SummaryCard Banner Image */}
@@ -19,7 +21,10 @@ export const SummaryCard = () => {
         <div tw="flex flex-col items-center rounded-3xl bg-[#04060A] mt-[-50%] z-30">
           <img
             tw="w-full h-28 object-center rounded-3xl  p-1 object-cover "
-            src="https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png"
+            src={
+              user.profileImage ||
+              "https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png"
+            }
           />
         </div>
         <div tw="flex flex-col items-center">
