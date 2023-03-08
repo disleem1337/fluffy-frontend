@@ -1,84 +1,232 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import tw from "twin.macro";
 import NullAvatar from "../assets/nullavatar.png";
 import { FcFlashOn } from "react-icons/fc";
-import { BsImages, BsCameraVideo, BsHash } from "react-icons/bs";
-import { ImAttachment } from "react-icons/im";
-import { GoMention } from "react-icons/go";
+import { BsImages, BsCameraVideo, BsHash, BsX } from "react-icons/bs";
+import { v4 } from "uuid";
+import { Editor } from "react-editor";
+import {
+  BorderRadius,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from "./Button/Button";
+import { createPost } from "../services/post";
+import { useFluffyAuth } from "../providers/fluffyAuthProvider";
+import { toast } from "react-hot-toast";
 
-const ShareTab: Array<{
-  name: string;
-  icon: React.ReactNode;
-}> = [
-  {
-    name: "Image",
-    icon: <BsImages size={20} color="#36628F" />,
-  },
-  {
-    name: "Videos",
-    icon: <BsCameraVideo size={18} color="#609E8A" />,
-  },
-  {
-    name: "Attachment",
-    icon: <ImAttachment size={18} color="#D7A985" />,
-  },
-  {
-    name: "Hastag",
-    icon: <BsHash size={18} color="#B24E60" />,
-  },
-  {
-    name: "Uygulamalar",
-    icon: <GoMention size={18} color="#A0A1A5" />,
-  },
-];
+type FileType = "image" | "video" | "unknown";
 
-const Sharestatus = () => {
+const photoFileExtensions = ["jpg", "jpeg", "png", "webp", "gif"];
+const videoExtensions = ["mp4", "webm"];
+
+const isTypeOfFile = (extensionArray: string[]) => (fileName: string) =>
+  extensionArray.includes(fileName.slice(fileName.lastIndexOf(".") + 1));
+
+const isPhoto = isTypeOfFile(photoFileExtensions);
+const isVideo = isTypeOfFile(videoExtensions);
+
+const resolveFileType = (fileName: string): FileType =>
+  isPhoto(fileName) ? "image" : isVideo(fileName) ? "video" : "unknown";
+
+type Content = {
+  file: File;
+  blobURL: string;
+  type: FileType;
+  id: string;
+};
+
+function ContentPreviewList({
+  contentList,
+  onClickClose,
+}: {
+  contentList: Content[];
+  onClickClose: (content: Content) => void;
+}) {
+  const gridCols = contentList.length == 1 ? tw`grid-cols-1` : tw`grid-cols-2`;
+  const gridRows = contentList.length > 2 ? tw`grid-rows-2` : tw`grid-rows-1`;
+
+  if (!contentList.length) return <div></div>;
+
+  return (
+    <div css={[gridCols, gridRows, tw`grid gap-4`]}>
+      {contentList.map((content) =>
+        content.type == "image" ? (
+          <div tw="relative">
+            <button
+              onClick={() => onClickClose(content)}
+              tw="w-8 h-8 rounded-full absolute top-2 left-2 bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition"
+            >
+              <BsX tw="w-7 h-7" />
+            </button>
+            <img
+              tw="w-full h-full object-cover object-center rounded-lg max-h-[32rem]"
+              src={content.blobURL}
+            />
+          </div>
+        ) : content.type == "video" ? (
+          <div tw="relative">
+            <div tw="relative">
+              <button
+                onClick={() => onClickClose(content)}
+                tw="w-8 h-8 rounded-full absolute top-2 left-2 bg-black/50 text-white flex items-center justify-center hover:bg-black/75 transition"
+              >
+                <BsX tw="w-7 h-7" />
+              </button>
+            </div>
+            <video
+              tw="w-full rounded-lg max-h-[32rem]"
+              controls
+              src={content.blobURL}
+            />
+          </div>
+        ) : (
+          <div> ahlan</div>
+        )
+      )}
+    </div>
+  );
+}
+const Sharestatus = ({ onShareStatus }: any) => {
+  const { token, user } = useFluffyAuth();
+  const [text, setText] = useState("");
+  const [content, setContent] = useState<Content[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onInput = async (e: any) => {
+    const previews = Array.from(e.target.files).map((file: any) => {
+      let blobURL = URL.createObjectURL(file);
+
+      return { file, blobURL, type: resolveFileType(file.name), id: v4() };
+    });
+
+    if (previews.some((preview) => preview.type == "unknown")) return;
+
+    // Fail if we try to add new file when we have video on content
+    if (content.some((someContent) => someContent.type == "video")) return;
+
+    setContent((prev) => [...prev, ...previews]);
+  };
+
+  const selectFieldByType = (types: string, multiple: boolean = false) => {
+    if (inputRef.current) {
+      inputRef.current.accept = types;
+      inputRef.current.multiple = multiple && content.length < 3;
+      inputRef.current.click();
+    }
+  };
+
+  const onClickClose = (clickedContent: Content) => {
+    setContent((prev) =>
+      prev.filter((prevContent) => prevContent.id != clickedContent.id)
+    );
+  };
+
+  const onClickSubmit = async () => {
+    const formData = new FormData();
+
+    if (text) formData.set("desc", text);
+    content.forEach((x) => {
+      if (isPhoto(x.file.name)) {
+        formData.append("images", x.file);
+      } else if (isVideo(x.file.name)) {
+        formData.append("video", x.file);
+      }
+    });
+    try {
+      const resp = await createPost(token as string, formData);
+      toast.success("Gönderi paylaşıldı!");
+
+      onShareStatus(text, content);
+      setText("");
+      setContent([]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const canSubmit = content.length > 0 || text.length > 0;
   return (
     <div tw="px-8 py-8 bg-white rounded-lg flex flex-col gap-4 items-center">
-      <div tw="w-full grid grid-cols-8 gap-2">
-        <div tw="col-span-1">
-          <ShareBox />
-        </div>
-        <div tw="col-span-7">
-          <div tw="relative w-full">
-            <input
-              type="text"
-              tw="block w-full p-2 text-sm text-gray-900  border-gray-300 rounded-md bg-gray-50 outline-none"
-              placeholder="Share something..."
-            />
-            <div tw="absolute inset-y-0 right-4 flex items-center pl-3 pointer-events-none">
-              <FcFlashOn size={22} />
+      <div tw="w-full flex flex-col gap-2">
+        <div tw="flex gap-2 w-full">
+          <div tw="flex-shrink-0">
+            <div tw="flex w-full justify-between items-center">
+              <img tw="w-10 rounded-full" src={user.profileImage} />
+            </div>
+          </div>
+          <div tw="flex-1">
+            <div tw="relative w-full">
+              {text.length == 0 && (
+                <div tw="absolute pointer-events-none top-1/2 -translate-y-1/2 left-2 text-black/60">
+                  Bir şey paylaş
+                </div>
+              )}
+              <Editor
+                value={text}
+                onChange={(e: any) => setText(e)}
+                tw="min-h-[2.5rem] block w-full p-2 text-gray-900  border-gray-300 rounded-md outline-none max-h-96 overflow-auto"
+              />
+              {/* <div
+              contentEditable="true"
+              dangerouslySetInnerHTML={{ __html: text }}
+              onInput={(e) => setText((e.target as any).innerHTML)}
+            /> */}
+              <div tw="absolute inset-y-0 right-4 flex items-center pl-3 pointer-events-none">
+                <FcFlashOn size={22} />
+              </div>
             </div>
           </div>
         </div>
+
+        <div tw="pl-12">
+          <ContentPreviewList
+            onClickClose={onClickClose}
+            contentList={content}
+          />
+        </div>
       </div>
       <hr tw="h-0.5 w-full bg-gray-200 border-0"></hr>
-      <div tw=" justify-around w-full lg:flex">
-        {ShareTab.map((item, index) => (
-          <ShareTabItem name={item.name} icon={item.icon} key={index} />
-        ))}
+      <div tw="flex w-full items-center justify-between">
+        <input onInput={onInput} ref={inputRef} type="file" tw="hidden" />
+        <div tw=" justify-around lg:flex">
+          <Button
+            variant={ButtonVariant.GHOST}
+            size={ButtonSize.MEDIUM}
+            onClick={() =>
+              selectFieldByType(
+                photoFileExtensions.map((x) => `.${x}`).join(", "),
+                true
+              )
+            }
+            tw="space-x-2"
+          >
+            <BsImages size={20} color="#36628F" />
+            <span>Image</span>
+          </Button>
+
+          <Button
+            variant={ButtonVariant.GHOST}
+            size={ButtonSize.MEDIUM}
+            onClick={() =>
+              selectFieldByType(videoExtensions.map((x) => `.${x}`).join(", "))
+            }
+            tw="space-x-2"
+          >
+            <BsCameraVideo size={20} color="#36628F" />
+            <span>Video</span>
+          </Button>
+        </div>
+        <Button
+          borderRadius={BorderRadius.SMALL}
+          disabled={!canSubmit}
+          size={ButtonSize.MEDIUM}
+          tw="px-6"
+          onClick={onClickSubmit}
+        >
+          Paylaş
+        </Button>
       </div>
-    </div>
-  );
-};
-
-const ShareBox = () => {
-  return (
-    <div tw="flex w-full justify-between items-center">
-      <img tw="w-8" src={NullAvatar} />
-    </div>
-  );
-};
-
-type ShareTabItemProps = {
-  name: string;
-  icon: React.ReactNode;
-};
-
-const ShareTabItem = ({ name, icon }: ShareTabItemProps) => {
-  return (
-    <div tw="flex gap-2 p-4 rounded-xl hover:bg-bgcolor hover:cursor-pointer">
-      {icon} <p tw="text-sm">{name}</p>
     </div>
   );
 };

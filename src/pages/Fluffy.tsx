@@ -7,8 +7,33 @@ import Post from "../components/Post";
 import Contacts from "../components/Contacts";
 import Postimage from "../assets/post.png";
 import PostimageTwo from "../assets/post2.jpg";
+import { useEffect, useState } from "react";
+import { getLatestPosts } from "../services/post";
+import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 
 function Fluffy() {
+  const [postList, setPostList] = useState<any[]>([]);
+  const { token, user } = useFluffyAuth();
+
+  useEffect(() => {
+    (async function () {
+      const posts = await getLatestPosts(token as string);
+      setPostList(posts.data);
+    })();
+  }, []);
+
+  const onShareNewPost = (desc: string, content: any[]) => {
+    setPostList((prev) => [
+      {
+        desc,
+        content,
+        user: [user],
+      },
+      ...prev,
+    ]);
+  };
+
+  console.log(postList);
   return (
     <BaseLayout>
       <div tw="grid grid-cols-4 gap-3">
@@ -17,11 +42,10 @@ function Fluffy() {
           <PrivacyTerms />
         </div>
         <div tw="col-span-4 md:col-span-2 flex flex-col gap-4">
-          <ShareStatus />
-          <Post postImage={Postimage} />
-          <Post postImage={PostimageTwo} />
-          <Post postImage={Postimage} />
-          <Post postImage={PostimageTwo} />
+          <ShareStatus onShareStatus={onShareNewPost} />
+          {postList.map((post) => (
+            <Post postData={post} />
+          ))}
         </div>
         <div tw="hidden md:flex flex-col sticky h-[fit-content] top-8">
           <Contacts title="Kişilerle Etkileşime Geç" />
