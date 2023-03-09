@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import tw from "twin.macro";
 import LoginSplash from "../assets/login-splash.jpg";
 import { useFluffyAuth } from "../providers/fluffyAuthProvider";
@@ -34,8 +35,12 @@ export const SummaryCard = () => {
       </div>
       {/* Name And Details */}
       <div tw="w-full h-full flex-col flex items-center p-2">
-        <h1 tw="text-xl font-semibold">0xB9F6...112EF7</h1>
-        <p tw="text-sm">@Developer</p>
+        <h1 tw="text-xl font-semibold">
+          {user.walletAddress.slice(0, 8) +
+            "..." +
+            user.walletAddress.slice(-8)}
+        </h1>
+        <p tw="text-sm">{user.username}</p>
       </div>
       {/* Description */}
       <div tw="w-full h-full flex-col flex items-center p-2 pb-4 text-center">
@@ -48,13 +53,15 @@ export const SummaryCard = () => {
       </div>
       <div tw="p-2 w-full">
         {/* <button tw="w-full bg-gray-200 p-2 text-gray-600">My Profile</button> */}
-        <Button
-          variant={ButtonVariant.SECONDARY}
-          borderRadius={BorderRadius.LARGE}
-          tw="w-full py-6"
-        >
-          My Profile
-        </Button>
+        <Link to="/profile">
+          <Button
+            variant={ButtonVariant.SECONDARY}
+            borderRadius={BorderRadius.LARGE}
+            tw="w-full py-6"
+          >
+            My Profile
+          </Button>
+        </Link>
       </div>
     </div>
   );

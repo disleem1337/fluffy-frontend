@@ -1,8 +1,10 @@
 import React from "react";
 import tw from "twin.macro";
-import NullAvatar from "../assets/nullavatar.png";
+import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 
 const ProfileBanner = () => {
+  const { user } = useFluffyAuth();
+
   return (
     <div tw="w-full ">
       <img
@@ -13,11 +15,16 @@ const ProfileBanner = () => {
         <div tw="h-24 w-[100px] rounded-full -translate-y-1/2 overflow-hidden ">
           <img
             tw="w-full h-full object-center object-cover"
-            src="https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png"
+            src={
+              user.profileImage ||
+              "https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png"
+            }
           />
         </div>
         <div tw="p-2 mt-2 font-bold bg-[#808080] cursor-pointer rounded-md text-white ">
-          0xB9F6...112EF7
+          {user.walletAddress.slice(0, 8) +
+            "..." +
+            user.walletAddress.slice(-8)}
         </div>
       </div>
     </div>

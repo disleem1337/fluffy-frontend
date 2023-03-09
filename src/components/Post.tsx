@@ -7,6 +7,7 @@ import { VscComment } from "react-icons/vsc";
 import { FiShare } from "react-icons/fi";
 import { BsShare } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 
 type PostProps = {
   postData: any;
@@ -47,15 +48,30 @@ function ContentPreviewList({ contentList }: { contentList: any[] }) {
 }
 
 const Post = ({ postData }: PostProps) => {
+  const { user } = useFluffyAuth();
+  console.log(postData);
   return (
     <div tw="flex flex-col px-4 py-4 bg-white rounded-lg items-start ">
       <div tw="flex items-center gap-2 text-sm">
-        <img tw="w-10 h-10 rounded-full" src={postData.user[0].profileImage} />
-        <span>
-          {postData.user[0].walletAddress.slice(0, 8) +
-            "..." +
-            postData.user[0].walletAddress.slice(-8)}
-        </span>
+        <img
+          tw="w-10 h-10 rounded-full"
+          src={
+            postData?.user ? postData.user[0].profileImage : user.profileImage
+          }
+        />
+        {postData?.user ? (
+          <span>
+            {postData.user[0].walletAddress.slice(0, 8) +
+              "..." +
+              postData.user[0].walletAddress.slice(-8)}
+          </span>
+        ) : (
+          <span>
+            {user.walletAddress.slice(0, 8) +
+              "..." +
+              user.walletAddress.slice(-8)}
+          </span>
+        )}
       </div>
       <div>
         {postData.desc && <p tw=" max-w-xl mt-4 leading-5">{postData.desc}</p>}

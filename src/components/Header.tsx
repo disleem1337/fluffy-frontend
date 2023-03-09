@@ -63,7 +63,9 @@ const Header = () => {
   return (
     <div tw="h-[70px] px-4 max-w-[1440px] mx-auto grid grid-cols-4 items-center justify-between gap-8 w-full">
       <div tw="hidden md:flex gap-3 items-center">
-        <h2 tw="font-bold text-2xl">Fluffy</h2>
+        <Link to="/">
+          <h2 tw="font-bold text-2xl">Fluffy</h2>
+        </Link>
         <div tw="relative w-full focus-within:text-black text-gray-600">
           <div tw="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg

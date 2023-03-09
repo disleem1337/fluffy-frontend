@@ -33,7 +33,6 @@ function Fluffy() {
     ]);
   };
 
-  console.log(postList);
   return (
     <BaseLayout>
       <div tw="grid grid-cols-4 gap-3">

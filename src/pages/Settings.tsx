@@ -7,10 +7,32 @@ import ProfileBanner from "../components/ProfileBanner";
 import ProfileInfo from "../components/ProfileInfo";
 import Contacts from "../components/Contacts";
 import Post from "../components/Post";
-import Postimage from "../assets/post.png";
-import PostimageTwo from "../assets/post2.jpg";
+import { userPosts } from "../services/post";
+import { useEffect, useState } from "react";
+import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 
 const Settings = () => {
+  const [postList, setPostList] = useState<any[]>([]);
+  const { token, user } = useFluffyAuth();
+
+  useEffect(() => {
+    (async function () {
+      const posts = await userPosts(token as string);
+      setPostList(posts.userposts);
+    })();
+  }, []);
+
+  const onShareNewPost = (desc: string, content: any[]) => {
+    setPostList((prev) => [
+      {
+        desc,
+        content,
+        user: [user],
+      },
+      ...prev,
+    ]);
+  };
+
   return (
     <BaseLayout>
       <div tw="grid grid-cols-4 gap-3 h-full">
@@ -21,8 +43,9 @@ const Settings = () => {
         <div tw="col-span-2 flex flex-col md:col-span-2 gap-2">
           <ProfileBanner />
           <ProfileInfo />
-          <Post postImage={Postimage} />
-          <Post postImage={PostimageTwo} />
+          {postList.map((post) => (
+            <Post postData={post} />
+          ))}
         </div>
         <div tw="col-span-1 md:flex flex-col sticky h-[fit-content] top-8">
           <Contacts title="Kişilerle Etkileşime Geç" />

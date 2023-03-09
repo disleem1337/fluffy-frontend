@@ -152,7 +152,10 @@ const Sharestatus = ({ onShareStatus }: any) => {
         <div tw="flex gap-2 w-full">
           <div tw="flex-shrink-0">
             <div tw="flex w-full justify-between items-center">
-              <img tw="w-10 rounded-full" src={user.profileImage} />
+              <img
+                tw="w-12 rounded-full h-12 object-cover"
+                src={user.profileImage}
+              />
             </div>
           </div>
           <div tw="flex-1">
@@ -167,14 +170,6 @@ const Sharestatus = ({ onShareStatus }: any) => {
                 onChange={(e: any) => setText(e)}
                 tw="min-h-[2.5rem] block w-full p-2 text-gray-900  border-gray-300 rounded-md outline-none max-h-96 overflow-auto"
               />
-              {/* <div
-              contentEditable="true"
-              dangerouslySetInnerHTML={{ __html: text }}
-              onInput={(e) => setText((e.target as any).innerHTML)}
-            /> */}
-              <div tw="absolute inset-y-0 right-4 flex items-center pl-3 pointer-events-none">
-                <FcFlashOn size={22} />
-              </div>
             </div>
           </div>
         </div>
