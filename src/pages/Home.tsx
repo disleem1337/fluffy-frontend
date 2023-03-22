@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { getLatestPosts } from "../services/post";
 import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 
-function Fluffy() {
+function HomePage() {
   const [postList, setPostList] = useState<any[]>([]);
   const { token, user } = useFluffyAuth();
 
@@ -55,4 +55,4 @@ function Fluffy() {
   );
 }
 
-export default Fluffy;
+export default HomePage;

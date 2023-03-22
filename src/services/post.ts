@@ -45,3 +45,43 @@ export async function userPosts(token: string) {
     throw new Error("Error while posting new content");
   }
 }
+
+export async function likePost(token: string, postid: string) {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/post/like`, {
+    method: "POST",
+    body: JSON.stringify({
+      postid,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error("Error while liking post");
+  }
+}
+
+export async function unlikePost(token: string, postid: string) {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/post/unlike`, {
+    method: "POST",
+    body: JSON.stringify({
+      postid,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error("Error while unliking post");
+  }
+}

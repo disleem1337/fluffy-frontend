@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import { useEffect } from "react";
 import LoginPage from "./pages/Login";
-import Fluffy from "./pages/Fluffy";
+import HomePage from "./pages/Home";
 import Settings from "./pages/Settings";
 import "twin.macro";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <OnlySetupRoute>
-          <Fluffy />
+          <HomePage />
         </OnlySetupRoute>
       </ProtectedRoute>
     ),

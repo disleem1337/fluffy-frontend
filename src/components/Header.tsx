@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import tw from "twin.macro";
 import {
   RiHomeLine,
@@ -14,7 +14,7 @@ import {
 } from "react-icons/ri";
 import { Link, NavLink } from "react-router-dom";
 import { Profiletab } from "./Profiletab";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 
 const HeaderLink: Array<{
   id: number;
@@ -59,60 +59,110 @@ const HeaderLink: Array<{
   },
 ];
 
-const Header = () => {
-  return (
-    <div tw="h-[70px] px-4 max-w-[1440px] mx-auto grid grid-cols-4 items-center justify-between gap-8 w-full">
-      <div tw="hidden md:flex gap-3 items-center">
-        <Link to="/">
-          <h2 tw="font-bold text-2xl">Fluffy</h2>
-        </Link>
-        <div tw="relative w-full focus-within:text-black text-gray-600">
-          <div tw="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg
-              aria-hidden="true"
-              tw="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
-          </div>
-          <input
-            type="search"
-            id="default-search"
-            tw="block w-full p-2 pl-10 text-sm text-gray-900 rounded-md border-gray-300 border bg-white focus:border-black outline-none"
-            placeholder="Ara"
-          />
-        </div>
-      </div>
-      <div tw="flex gap-12 justify-center col-span-4 md:col-span-2">
-        {HeaderLink.map((link) =>
-          link.link ? (
-            <HeaderTab
-              name={link.name}
-              link={link.link}
-              icon={link.icon}
-              key={link.id}
-              fillIcon={link.fillIcon}
-            />
-          ) : (
-            <button>{link.icon}</button>
-          )
-        )}
-      </div>
+const HEADER_HEIGHT = (70 * 3) / 4;
 
-      <div tw="md:flex items-center justify-end gap-3 hidden">
-        <Link to="/profile" tw="hidden md:block">
-          <Profiletab full={false} name="0xB9F6...112EF7" />
-        </Link>
-      </div>
+const Header = () => {
+  const containerRef = useRef(null);
+  const [isInView, setIsInView] = useState(true);
+
+  useEffect(() => {
+    function onScroll() {
+      setIsInView(window.scrollY <= HEADER_HEIGHT);
+    }
+    window.addEventListener("scroll", onScroll);
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <div
+      ref={containerRef}
+      tw="h-[70px] px-4 max-w-[1440px] mx-auto grid grid-cols-4 items-center justify-between gap-8 w-full"
+    >
+      {!isInView && (
+        <div tw="fixed top-4 pl-4 w-full left-0 flex justify-center z-10">
+          <motion.div
+            initial={{
+              y: -50,
+            }}
+            animate={{
+              y: 0,
+            }}
+            tw="flex gap-12 justify-center w-[fit-content] bg-white p-4 rounded-full"
+          >
+            {HeaderLink.map((link) =>
+              link.link ? (
+                <HeaderTab
+                  layoutId="inline-header-blob"
+                  name={link.name}
+                  link={link.link}
+                  icon={link.icon}
+                  key={link.id}
+                  fillIcon={link.fillIcon}
+                />
+              ) : (
+                <button>{link.icon}</button>
+              )
+            )}
+          </motion.div>
+        </div>
+      )}
+      {isInView && (
+        <>
+          <div tw="hidden md:flex gap-3 items-center">
+            <Link to="/">
+              <h2 tw="font-bold text-2xl">Fluffy</h2>
+            </Link>
+            <div tw="relative w-full focus-within:text-black text-gray-600">
+              <div tw="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg
+                  aria-hidden="true"
+                  tw="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  ></path>
+                </svg>
+              </div>
+              <input
+                type="search"
+                id="default-search"
+                tw="block w-full p-2 pl-10 text-sm text-gray-900 rounded-md border-gray-300 border bg-white focus:border-black outline-none"
+                placeholder="Ara"
+              />
+            </div>
+          </div>
+          <div tw="col-span-4 md:col-span-2 flex justify-center">
+            <div tw="flex gap-12 justify-center w-[fit-content]">
+              {HeaderLink.map((link) =>
+                link.link ? (
+                  <HeaderTab
+                    name={link.name}
+                    link={link.link}
+                    icon={link.icon}
+                    key={link.id}
+                    fillIcon={link.fillIcon}
+                  />
+                ) : (
+                  <button>{link.icon}</button>
+                )
+              )}
+            </div>
+          </div>
+
+          <div tw="md:flex items-center justify-end gap-3 hidden">
+            <Link to="/profile" tw="hidden md:block">
+              <Profiletab full={false} name="0xB9F6...112EF7" />
+            </Link>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -122,9 +172,16 @@ type HeaderTabProps = {
   link: string;
   icon: React.ReactNode;
   fillIcon?: React.ReactNode;
+  layoutId?: string;
 };
 
-const HeaderTab = ({ name, link, icon, fillIcon }: HeaderTabProps) => {
+const HeaderTab = ({
+  name,
+  link,
+  icon,
+  fillIcon,
+  layoutId,
+}: HeaderTabProps) => {
   return (
     <NavLink to={link}>
       {({ isActive }) => {
@@ -134,7 +191,7 @@ const HeaderTab = ({ name, link, icon, fillIcon }: HeaderTabProps) => {
             <div tw="absolute top-6 left-1/2 -translate-x-1/2">
               {isActive && (
                 <motion.div
-                  layoutId="header-blob"
+                  layoutId={layoutId || "header-blob"}
                   tw="w-2 h-2 bg-black rounded-full"
                 ></motion.div>
               )}
