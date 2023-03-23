@@ -7,11 +7,15 @@ import { BsShare } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 import { Button, ButtonVariant } from "./Button/Button";
-import { likePost, unlikePost } from "../services/post";
+import { likePost, submitComment, unlikePost } from "../services/post";
+import { Editor } from "react-editor";
 
 type PostProps = {
   postData: any;
   redirectOnClick?: boolean;
+  showComments?: boolean;
+  writeComment?: boolean;
+  onSubmitComment?: (...args: any[]) => any;
 };
 
 function ConditionalLink({
@@ -91,11 +95,17 @@ function ContentPreviewList({ contentList }: { contentList: any[] }) {
   );
 }
 
-const Post = ({ postData, redirectOnClick = false }: PostProps) => {
+const Post = ({
+  postData,
+  redirectOnClick = false,
+  showComments = false,
+  writeComment = false,
+  onSubmitComment: commentSubmitCallback,
+}: PostProps) => {
   const { user, token } = useFluffyAuth();
   const [isLiked, setLiked] = useState(postData.liked || false);
   const [likeCount, setLikeCount] = useState<number>(postData.likeCount || 0);
-  const [isStopped, setIsStopped] = useState(true);
+  const [currentComment, setCurrentComment] = useState("");
 
   // useEffect(() => {
   //   if (lottieRef.current)
@@ -108,7 +118,6 @@ const Post = ({ postData, redirectOnClick = false }: PostProps) => {
 
     try {
       setLiked(isLiking);
-      setIsStopped(false);
 
       if (isLiking) {
         setLikeCount((count) => count + 1);
@@ -122,6 +131,18 @@ const Post = ({ postData, redirectOnClick = false }: PostProps) => {
       else setLikeCount((count) => count + 1);
       setLiked(!isLiking);
     }
+  };
+
+  const onSubmitComment = async () => {
+    try {
+      const res = await submitComment(
+        token as any,
+        postData._id,
+        currentComment
+      );
+      setCurrentComment("");
+      if (commentSubmitCallback) commentSubmitCallback();
+    } catch (err) {}
   };
 
   return (
@@ -142,7 +163,7 @@ const Post = ({ postData, redirectOnClick = false }: PostProps) => {
               postData?.user ? postData.user[0].profileImage : user.profileImage
             }
           />
-          {postData?.user ? (
+          {/* {postData?.user ? (
             <span>
               {postData.user[0].walletAddress.slice(0, 8) +
                 "..." +
@@ -154,7 +175,8 @@ const Post = ({ postData, redirectOnClick = false }: PostProps) => {
                 "..." +
                 user.walletAddress.slice(-8)}
             </span>
-          )}
+          )} */}
+          <span>{postData.user?.[0].name || user.name}</span>
         </div>
         <div>
           {postData.desc && (
@@ -191,9 +213,73 @@ const Post = ({ postData, redirectOnClick = false }: PostProps) => {
             </div>
           </div>
         </div>
+        {writeComment && (
+          <div tw="flex p-2 w-full">
+            <img
+              tw="w-12 h-12 object-center object-cover rounded-full"
+              src={user.profileImage}
+            />
+            <div tw="w-full relative">
+              {currentComment.length == 0 && (
+                <div tw="absolute pointer-events-none top-1/2 -translate-y-1/2 left-2 text-black/60">
+                  Bir yorum yap
+                </div>
+              )}
+              <div tw="flex">
+                <Editor
+                  value={currentComment}
+                  onChange={(e: any) => setCurrentComment(e)}
+                  tw="min-h-[2.5rem] block w-full p-2 text-gray-900  border-gray-300 rounded-md outline-none max-h-96 overflow-auto break-all"
+                />
+                <div tw="mt-2 flex-shrink-0">
+                  <Button
+                    onClick={onSubmitComment}
+                    disabled={currentComment.length == 0}
+                  >
+                    Gönder
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        <div tw="flex flex-col gap-2">
+          {showComments &&
+            postData.comments &&
+            postData.comments.reverse().map((comment: any, i: number) => {
+              const commentUser = postData.commentUsers?.find(
+                (user: any) => user._id == comment.userid
+              );
+
+              if (!commentUser) return null;
+
+              const commentData = {
+                ...comment,
+                user: commentUser,
+              };
+              return <Comment data={commentData}></Comment>;
+            })}
+        </div>
       </div>
     </ConditionalLink>
   );
 };
+
+function Comment({ data }: { data: any }) {
+  return (
+    <div tw="flex p-2">
+      <div tw="flex gap-4">
+        <img
+          tw="w-12 h-12 object-cover object-center rounded-full"
+          src={data.user.profileImage}
+        ></img>
+        <div>
+          <p tw="font-medium">{data.user.name}</p>
+          <p>{data.comment}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default Post;

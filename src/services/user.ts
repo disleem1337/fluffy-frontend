@@ -31,3 +31,20 @@ export async function setup(token: string, data: FormData) {
     throw new Error(data.message);
   }
 }
+
+export async function getUser(token: string, id: string) {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/user/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    const data = await response.json();
+    throw new Error(data.message);
+  }
+}
