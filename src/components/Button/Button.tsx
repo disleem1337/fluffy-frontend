@@ -69,7 +69,7 @@ type ButtonProps = {
   /**
    * İsteğe bağlı olay dinleyici
    */
-  onClick?: () => void;
+  onClick?: (...args: any[]) => any;
   /**
    * Butonun ebeveyninin genişğini kaplaması
    */

@@ -13,6 +13,7 @@ import Setup from "./pages/Setup";
 import OnlyNotSetupRoute from "./components/OnlyNotSetupRoute";
 import OnlySetupRoute from "./components/OnlySetupRoute";
 import { Toaster } from "react-hot-toast";
+import PostPage from "./pages/PostPage";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,16 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <OnlySetupRoute>
           <Settings />
+        </OnlySetupRoute>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/post/:id",
+    element: (
+      <ProtectedRoute>
+        <OnlySetupRoute>
+          <PostPage />
         </OnlySetupRoute>
       </ProtectedRoute>
     ),

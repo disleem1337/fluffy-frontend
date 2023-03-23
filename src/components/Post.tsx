@@ -11,8 +11,27 @@ import { likePost, unlikePost } from "../services/post";
 
 type PostProps = {
   postData: any;
+  redirectOnClick?: boolean;
 };
 
+function ConditionalLink({
+  active = true,
+  to = "#",
+  children,
+  ...props
+}: {
+  active?: boolean;
+  to?: string;
+  children?: any;
+}) {
+  return active ? (
+    <Link to={to} {...props}>
+      {children}
+    </Link>
+  ) : (
+    <>{children}</>
+  );
+}
 function LikeButton({
   onClick,
   isLiked = false,
@@ -48,9 +67,9 @@ function ContentPreviewList({ contentList }: { contentList: any[] }) {
     <div css={[gridCols, gridRows, tw`grid gap-4`]}>
       {contentList.map((content) =>
         content.type == "image" ? (
-          <div tw="relative">
+          <div tw="relative overflow-hidden rounded-lg ">
             <img
-              tw="w-full h-full object-cover object-center rounded-lg max-h-[32rem]"
+              tw="w-full h-full object-cover object-center max-h-[32rem] hover:scale-125 transition duration-300"
               src={content.url || content.blobURL}
             />
           </div>
@@ -72,7 +91,7 @@ function ContentPreviewList({ contentList }: { contentList: any[] }) {
   );
 }
 
-const Post = ({ postData }: PostProps) => {
+const Post = ({ postData, redirectOnClick = false }: PostProps) => {
   const { user, token } = useFluffyAuth();
   const [isLiked, setLiked] = useState(postData.liked || false);
   const [likeCount, setLikeCount] = useState<number>(postData.likeCount || 0);
@@ -83,7 +102,8 @@ const Post = ({ postData }: PostProps) => {
   //     (lottieRef.current as any).goToAndStop(isLiked ? 100 : 0);
   // }, [lottieRef]);
 
-  const onClickLikeButton = async () => {
+  const onClickLikeButton = async (e: any) => {
+    e.preventDefault();
     const isLiking = !isLiked;
 
     try {
@@ -104,64 +124,75 @@ const Post = ({ postData }: PostProps) => {
     }
   };
 
-  console.log(postData);
   return (
-    <div tw="flex flex-col px-4 py-4 bg-white rounded-lg items-start ">
-      <div tw="flex items-center gap-2 text-sm">
-        <img
-          tw="w-10 h-10 rounded-full"
-          src={
-            postData?.user ? postData.user[0].profileImage : user.profileImage
-          }
-        />
-        {postData?.user ? (
-          <span>
-            {postData.user[0].walletAddress.slice(0, 8) +
-              "..." +
-              postData.user[0].walletAddress.slice(-8)}
-          </span>
-        ) : (
-          <span>
-            {user.walletAddress.slice(0, 8) +
-              "..." +
-              user.walletAddress.slice(-8)}
-          </span>
+    <ConditionalLink
+      active={redirectOnClick}
+      to={redirectOnClick ? `/post/${postData._id}` : `#`}
+    >
+      <div
+        css={[
+          tw`flex flex-col px-4 py-4 bg-white rounded-lg items-start transition`,
+          redirectOnClick && tw`hover:bg-gray-50`,
+        ]}
+      >
+        <div tw="flex items-center gap-2 text-sm">
+          <img
+            tw="w-10 h-10 rounded-full"
+            src={
+              postData?.user ? postData.user[0].profileImage : user.profileImage
+            }
+          />
+          {postData?.user ? (
+            <span>
+              {postData.user[0].walletAddress.slice(0, 8) +
+                "..." +
+                postData.user[0].walletAddress.slice(-8)}
+            </span>
+          ) : (
+            <span>
+              {user.walletAddress.slice(0, 8) +
+                "..." +
+                user.walletAddress.slice(-8)}
+            </span>
+          )}
+        </div>
+        <div>
+          {postData.desc && (
+            <p tw=" max-w-xl mt-4 leading-5">{postData.desc}</p>
+          )}
+          {/* <img src={postImage} tw="w-full mt-4 " /> */}
+        </div>
+        {postData.content.length > 0 && (
+          <div tw="w-full mt-3">
+            <ContentPreviewList contentList={postData.content} />
+          </div>
         )}
-      </div>
-      <div>
-        {postData.desc && <p tw=" max-w-xl mt-4 leading-5">{postData.desc}</p>}
-        {/* <img src={postImage} tw="w-full mt-4 " /> */}
-      </div>
-      {postData.content.length > 0 && (
-        <div tw="w-full mt-3">
-          <ContentPreviewList contentList={postData.content} />
-        </div>
-      )}
-      <div tw="flex mt-2 items-center justify-between w-full cursor-pointer">
-        <div tw="flex gap-8 items-center">
-          <Button
-            variant={ButtonVariant.GHOST}
-            onClick={onClickLikeButton}
-            tw="flex gap-2 items-center p-2 hover:bg-bgcolor rounded-lg w-16"
-          >
-            <LikeButton isLiked={isLiked} />
-            <p tw="text-sm">{likeCount}</p>
-          </Button>
-          <div tw="flex gap-2 items-center p-2  hover:bg-bgcolor rounded-lg">
-            <VscComment size={20} />
-            <p tw="text-sm">{postData.commentCount || 0}</p>
+        <div tw="flex mt-2 items-center justify-between w-full cursor-pointer">
+          <div tw="flex gap-8 items-center">
+            <Button
+              variant={ButtonVariant.GHOST}
+              onClick={onClickLikeButton}
+              tw="flex gap-2 items-center p-2 hover:bg-bgcolor rounded-lg w-16"
+            >
+              <LikeButton isLiked={isLiked} />
+              <p tw="text-sm">{likeCount}</p>
+            </Button>
+            <Button
+              variant={ButtonVariant.GHOST}
+              tw="flex gap-2 items-center p-2 hover:bg-bgcolor rounded-lg w-16"
+            >
+              <VscComment size={20} />
+              <p tw="text-sm">{postData.commentCount || 0}</p>
+            </Button>
           </div>
-          <div tw="flex gap-2 items-center p-2  hover:bg-bgcolor rounded-lg">
-            <FiShare size={20} />
-          </div>
-        </div>
-        <div tw="flex gap-8 items-center">
-          <div tw="flex gap-2 items-center p-2  hover:bg-bgcolor rounded-lg">
-            <BsShare size={20} />
+          <div tw="flex gap-8 items-center">
+            <div tw="flex gap-2 items-center p-2  hover:bg-bgcolor rounded-lg">
+              <BsShare size={20} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </ConditionalLink>
   );
 };
 

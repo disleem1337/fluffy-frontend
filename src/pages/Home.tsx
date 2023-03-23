@@ -43,7 +43,7 @@ function HomePage() {
         <div tw="col-span-4 md:col-span-2 flex flex-col gap-4">
           <ShareStatus onShareStatus={onShareNewPost} />
           {postList.map((post) => (
-            <Post postData={post} />
+            <Post redirectOnClick postData={post} />
           ))}
         </div>
         <div tw="hidden md:flex flex-col sticky h-[fit-content] top-8">
