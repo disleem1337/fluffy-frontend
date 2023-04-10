@@ -22,15 +22,9 @@ function HomePage() {
     })();
   }, []);
 
-  const onShareNewPost = (desc: string, content: any[]) => {
-    setPostList((prev) => [
-      {
-        desc,
-        content,
-        user: [user],
-      },
-      ...prev,
-    ]);
+  const onShareNewPost = async (desc: string, content: any[]) => {
+    const posts = await getLatestPosts(token as string);
+    setPostList(posts.data);
   };
 
   return (

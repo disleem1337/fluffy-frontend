@@ -92,6 +92,7 @@ const Sharestatus = ({ onShareStatus }: any) => {
   const [text, setText] = useState("");
   const [content, setContent] = useState<Content[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
 
   const onInput = async (e: any) => {
     const previews = Array.from(e.target.files).map((file: any) => {
@@ -123,6 +124,7 @@ const Sharestatus = ({ onShareStatus }: any) => {
   };
 
   const onClickSubmit = async () => {
+    setLoading(true);
     const formData = new FormData();
 
     if (text) formData.set("desc", text);
@@ -136,6 +138,7 @@ const Sharestatus = ({ onShareStatus }: any) => {
     try {
       const resp = await createPost(token as string, formData);
       toast.success("Gönderi paylaşıldı!");
+      setLoading(false);
 
       onShareStatus(text, content);
       setText("");
@@ -214,7 +217,7 @@ const Sharestatus = ({ onShareStatus }: any) => {
         </div>
         <Button
           borderRadius={BorderRadius.SMALL}
-          disabled={!canSubmit}
+          disabled={!canSubmit || loading}
           size={ButtonSize.MEDIUM}
           tw="px-6"
           onClick={onClickSubmit}

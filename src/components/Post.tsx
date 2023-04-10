@@ -246,19 +246,22 @@ const Post = ({
         <div tw="flex flex-col gap-2">
           {showComments &&
             postData.comments &&
-            postData.comments.reverse().map((comment: any, i: number) => {
-              const commentUser = postData.commentUsers?.find(
-                (user: any) => user._id == comment.userid
-              );
+            postData.comments
+              .slice()
+              .reverse()
+              .map((comment: any, i: number) => {
+                const commentUser = postData.commentUsers?.find(
+                  (user: any) => user._id == comment.userid
+                );
 
-              if (!commentUser) return null;
+                if (!commentUser) return null;
 
-              const commentData = {
-                ...comment,
-                user: commentUser,
-              };
-              return <Comment data={commentData}></Comment>;
-            })}
+                const commentData = {
+                  ...comment,
+                  user: commentUser,
+                };
+                return <Comment data={commentData}></Comment>;
+              })}
         </div>
       </div>
     </ConditionalLink>

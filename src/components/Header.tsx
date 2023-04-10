@@ -79,7 +79,7 @@ const Header = () => {
       tw="h-[70px] px-4 max-w-[1440px] mx-auto grid grid-cols-4 items-center justify-between gap-8 w-full"
     >
       {!isInView && (
-        <div tw="fixed top-4 pl-4 w-full left-0 flex justify-center z-10">
+        <div tw="fixed top-4  pl-4 w-full left-0 flex justify-center z-10">
           <motion.div
             initial={{
               y: -50,
@@ -87,7 +87,7 @@ const Header = () => {
             animate={{
               y: 0,
             }}
-            tw="flex gap-12 justify-center w-[fit-content] bg-white p-4 rounded-full"
+            tw="flex gap-12 justify-center w-[fit-content] bg-white p-4 border-[1px] rounded-full"
           >
             {HeaderLink.map((link) =>
               link.link ? (
