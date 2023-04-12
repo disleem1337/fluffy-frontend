@@ -48,3 +48,37 @@ export async function getUser(token: string, id: string) {
     throw new Error(data.message);
   }
 }
+
+export async function getStats(token: string) {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/user/stats`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    const data = await response.json();
+    throw new Error(data.message);
+  }
+}
+
+export async function getAllUser(token: string) {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/user/allUser`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    const data = await response.json();
+    throw new Error(data.message);
+  }
+}

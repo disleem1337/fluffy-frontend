@@ -9,6 +9,7 @@ import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 import { Button, ButtonVariant } from "./Button/Button";
 import { likePost, submitComment, unlikePost } from "../services/post";
 import { Editor } from "react-editor";
+import { toast } from "react-hot-toast";
 
 type PostProps = {
   postData: any;
@@ -145,6 +146,13 @@ const Post = ({
     } catch (err) {}
   };
 
+  const copyShareLink = () => {
+    navigator.clipboard.writeText(
+      `${window.location.protocol}//${window.location.host}/post/${postData._id}`
+    );
+    toast.success("Paylaşım linki panoya kopyalandı!");
+  };
+
   return (
     <ConditionalLink
       active={redirectOnClick}
@@ -209,7 +217,9 @@ const Post = ({
           </div>
           <div tw="flex gap-8 items-center">
             <div tw="flex gap-2 items-center p-2  hover:bg-bgcolor rounded-lg">
-              <BsShare size={20} />
+              <button onClick={copyShareLink}>
+                <BsShare size={20} />
+              </button>
             </div>
           </div>
         </div>

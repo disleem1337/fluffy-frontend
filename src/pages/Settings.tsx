@@ -18,6 +18,7 @@ const Settings = () => {
   useEffect(() => {
     (async function () {
       const posts = await userPosts(token as string);
+      console.log(posts);
       setPostList(posts.userposts);
     })();
   }, []);
@@ -43,8 +44,8 @@ const Settings = () => {
         <div tw="col-span-2 flex flex-col md:col-span-2 gap-2">
           <ProfileBanner />
           <ProfileInfo />
-          {postList.map((post) => (
-            <Post postData={post} />
+          {postList.map((post, index) => (
+            <Post postData={post} key={index} />
           ))}
         </div>
         <div tw="col-span-1 md:flex flex-col sticky h-[fit-content] top-8">
