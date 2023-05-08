@@ -101,6 +101,29 @@ export async function unlikePost(token: string, postid: string) {
   }
 }
 
+export async function getOtherUserPost(token: string, userid: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/post/getotheruserposts`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userid,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    }
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error("Error while unliking post");
+  }
+}
+
 export async function submitComment(
   token: string,
   postid: string,

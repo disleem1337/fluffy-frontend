@@ -70,9 +70,9 @@ function ContentPreviewList({ contentList }: { contentList: any[] }) {
 
   return (
     <div css={[gridCols, gridRows, tw`grid gap-4`]}>
-      {contentList.map((content) =>
+      {contentList.map((content, index) =>
         content.type == "image" ? (
-          <div tw="relative overflow-hidden rounded-lg ">
+          <div key={index} tw="relative overflow-hidden rounded-lg ">
             <img
               tw="w-full h-full object-cover object-center max-h-[32rem] hover:scale-125 transition duration-300"
               src={content.url || content.blobURL}
@@ -107,6 +107,7 @@ const Post = ({
   const [isLiked, setLiked] = useState(postData.liked || false);
   const [likeCount, setLikeCount] = useState<number>(postData.likeCount || 0);
   const [currentComment, setCurrentComment] = useState("");
+  const [userid, setUserId] = useState(postData.userid || "");
 
   // useEffect(() => {
   //   if (lottieRef.current)
@@ -184,7 +185,9 @@ const Post = ({
                 user.walletAddress.slice(-8)}
             </span>
           )} */}
-          <span>{postData.user?.[0].name || user.name}</span>
+          <Link to={`/profile/${userid}`}>
+            <span>{postData.user?.[0].name || user.name}</span>
+          </Link>
         </div>
         <div>
           {postData.desc && (

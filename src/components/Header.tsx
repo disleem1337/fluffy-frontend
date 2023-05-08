@@ -47,6 +47,7 @@ const HeaderLink: Array<{
   {
     id: 4,
     name: "Bildirimler",
+    link: "/notifications",
     icon: <RiNotification3Line size={24} />,
     fillIcon: <RiNotification3Fill size={24} />,
   },
@@ -89,18 +90,18 @@ const Header = () => {
             }}
             tw="flex gap-12 justify-center w-[fit-content] bg-white p-4 border-[1px] rounded-full"
           >
-            {HeaderLink.map((link) =>
+            {HeaderLink.map((link, index) =>
               link.link ? (
                 <HeaderTab
                   layoutId="inline-header-blob"
                   name={link.name}
                   link={link.link}
                   icon={link.icon}
-                  key={link.id}
+                  key={index}
                   fillIcon={link.fillIcon}
                 />
               ) : (
-                <button>{link.icon}</button>
+                <button key={index}>{link.icon}</button>
               )
             )}
           </motion.div>
@@ -140,17 +141,17 @@ const Header = () => {
           </div>
           <div tw="col-span-4 md:col-span-2 flex justify-center">
             <div tw="flex gap-12 justify-center w-[fit-content]">
-              {HeaderLink.map((link) =>
+              {HeaderLink.map((link, index) =>
                 link.link ? (
                   <HeaderTab
                     name={link.name}
                     link={link.link}
                     icon={link.icon}
-                    key={link.id}
+                    key={index}
                     fillIcon={link.fillIcon}
                   />
                 ) : (
-                  <button>{link.icon}</button>
+                  <button key={index}>{link.icon}</button>
                 )
               )}
             </div>

@@ -18,7 +18,6 @@ const Settings = () => {
   useEffect(() => {
     (async function () {
       const posts = await userPosts(token as string);
-      console.log(posts);
       setPostList(posts.userposts);
     })();
   }, []);

@@ -82,3 +82,26 @@ export async function getAllUser(token: string) {
     throw new Error(data.message);
   }
 }
+
+export async function getOtherUserStats(token: string, userid: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/user/otheruserstats`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        userid,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    }
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error("Error while unliking post");
+  }
+}

@@ -14,6 +14,8 @@ import OnlyNotSetupRoute from "./components/OnlyNotSetupRoute";
 import OnlySetupRoute from "./components/OnlySetupRoute";
 import { Toaster } from "react-hot-toast";
 import PostPage from "./pages/PostPage";
+import Profile from "./pages/Profile";
+import Notifications from "./pages/Notifications";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +59,16 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/notifications",
+    element: (
+      <ProtectedRoute>
+        <OnlySetupRoute>
+          <Notifications />
+        </OnlySetupRoute>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/login",
     element: (
       <GuestRoute>
@@ -70,6 +82,16 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <OnlySetupRoute>
           <Settings />
+        </OnlySetupRoute>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/profile/:id",
+    element: (
+      <ProtectedRoute>
+        <OnlySetupRoute>
+          <Profile />
         </OnlySetupRoute>
       </ProtectedRoute>
     ),
