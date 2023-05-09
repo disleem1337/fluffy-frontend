@@ -5,6 +5,8 @@ import PrivacyTerms from "../components/privacy";
 import ShareStatus from "../components/Sharestatus";
 import Post from "../components/Post";
 import Contacts from "../components/Contacts";
+import ActiveUserChat from "../components/ActiveUserChat";
+import ChatComponent from "../components/ChatComponent";
 
 function Chat() {
   return (
@@ -15,7 +17,8 @@ function Chat() {
           <PrivacyTerms />
         </div>
         <div tw="col-span-2 flex flex-col md:col-span-2 gap-2">
-          <h1>Chat Page</h1>
+          <ActiveUserChat />
+          <ChatComponent />
         </div>
         <div tw="col-span-1 md:flex flex-col sticky h-[fit-content] top-8">
           <Contacts title="Kişilerle Etkileşime Geç" />

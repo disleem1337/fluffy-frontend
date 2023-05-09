@@ -5,14 +5,7 @@ import { RiUserFollowFill } from "react-icons/ri";
 import { BsFillShareFill } from "react-icons/bs";
 import { IoIosNotifications } from "react-icons/io";
 
-type NoficationsButtonProps = {
-  type: "like" | "follow" | "share";
-  action: string;
-  seen: boolean;
-  new: boolean;
-};
-
-const NoficationsButton = ({ type, action, seen, active }) => {
+const NoficationsButton = ({ type, action, seen, active }: any) => {
   const types: any = {
     like: {
       type: "like",
