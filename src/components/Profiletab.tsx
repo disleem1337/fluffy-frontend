@@ -2,6 +2,7 @@ import NullAvatar from "../assets/nullavatar.png";
 import React from "react";
 import tw from "twin.macro";
 import { useFluffyAuth } from "../providers/fluffyAuthProvider";
+import { getImageWithFallback } from "../utils";
 
 type ProfiletabProps = {
   name: string;
@@ -19,10 +20,7 @@ export const Profiletab = ({ name, full }: ProfiletabProps) => {
       ]}
     >
       <img
-        src={
-          user.profileImage ||
-          "https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png"
-        }
+        src={getImageWithFallback(user.profileImage)}
         tw="w-8 h-8 object-cover rounded-full"
       />
       <p>{name}</p>

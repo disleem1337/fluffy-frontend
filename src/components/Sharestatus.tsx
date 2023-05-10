@@ -14,6 +14,7 @@ import {
 import { createPost } from "../services/post";
 import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 import { toast } from "react-hot-toast";
+import { getImageWithFallback } from "../utils";
 
 type FileType = "image" | "video" | "unknown";
 
@@ -157,7 +158,7 @@ const Sharestatus = ({ onShareStatus }: any) => {
             <div tw="flex w-full justify-between items-center">
               <img
                 tw="w-12 rounded-full h-12 object-cover"
-                src={user.profileImage}
+                src={getImageWithFallback(user.profileImage)}
               />
             </div>
           </div>

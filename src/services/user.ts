@@ -105,3 +105,43 @@ export async function getOtherUserStats(token: string, userid: string) {
     throw new Error("Error while unliking post");
   }
 }
+
+export async function followUser(token: string, userid: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/user/${userid}/follow`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    }
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error("Error while unliking post");
+  }
+}
+
+export async function unfollowUser(token: string, userid: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/user/${userid}/unfollow`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    }
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error("Error while unliking post");
+  }
+}

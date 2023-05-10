@@ -10,6 +10,7 @@ import { Button, ButtonVariant } from "./Button/Button";
 import { likePost, submitComment, unlikePost } from "../services/post";
 import { Editor } from "react-editor";
 import { toast } from "react-hot-toast";
+import { getImageWithFallback } from "../utils";
 
 type PostProps = {
   postData: any;
@@ -168,9 +169,7 @@ const Post = ({
         <div tw="flex items-center gap-2 text-sm">
           <img
             tw="w-10 h-10 rounded-full"
-            src={
-              postData?.user ? postData.user[0].profileImage : user.profileImage
-            }
+            src={getImageWithFallback(postData.user[0].profileImage)}
           />
           {/* {postData?.user ? (
             <span>
@@ -230,7 +229,7 @@ const Post = ({
           <div tw="flex p-2 w-full">
             <img
               tw="w-12 h-12 object-center object-cover rounded-full"
-              src={user.profileImage}
+              src={getImageWithFallback(user.profileImage)}
             />
             <div tw="w-full relative">
               {currentComment.length == 0 && (
@@ -287,7 +286,7 @@ function Comment({ data }: { data: any }) {
       <div tw="flex gap-4">
         <img
           tw="w-12 h-12 object-cover object-center rounded-full"
-          src={data.user.profileImage}
+          src={getImageWithFallback(data.user.profileImage)}
         ></img>
         <div>
           <p tw="font-medium">{data.user.name}</p>

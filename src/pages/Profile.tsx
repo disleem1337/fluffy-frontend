@@ -14,29 +14,30 @@ import { useParams } from "react-router-dom";
 import { getOtherUserStats, getUser } from "../services/user";
 
 const Profile = () => {
-  const params = useParams();
-  const [id, setId] = useState<any>(params.id || null);
+  const { id: userId } = useParams();
   const [postList, setPostList] = useState<any[]>([]);
   const [userDetail, setUserDetail] = useState<any>(null);
-  const [mounted, setMounted] = useState<boolean>(false);
+  const [isLoaded, setLoaded] = useState<boolean>(false);
   const [banner, setBanner] = useState<any>(null);
   const { token, user } = useFluffyAuth();
 
+  console.log(userId);
+
   useEffect(() => {
-    setId(params.id);
     (async function () {
-      const posts = await getOtherUserPost(token as string, id);
+      const posts = await getOtherUserPost(token as string, userId!);
       setPostList(posts.userposts);
-      const userinfo = await getOtherUserStats(token as string, id);
+      const userinfo = await getOtherUserStats(token as string, userId!);
       setUserDetail(userinfo.data);
-      const banner = await getUser(token as string, id);
+      const banner = await getUser(token as string, userId!);
       setBanner(banner.user);
-      setMounted(true);
+      setLoaded(true);
     })();
-  }, [params.id]);
+  }, [userId]);
+
   return (
-    mounted && (
-      <BaseLayout>
+    <BaseLayout>
+      {isLoaded && (
         <div tw="grid grid-cols-4 gap-3 h-full">
           <div tw="col-span-1 hidden md:flex flex-col gap-2 sticky h-[fit-content] top-8">
             <SummaryCard />
@@ -46,7 +47,7 @@ const Profile = () => {
             <ProfileBanner userDetail={banner} />
             <ProfileInfo info={userDetail} />
             {postList.map((post, index) => (
-              <Post postData={post} key={index} />
+              <Post postData={post} key={index} redirectOnClick />
             ))}
           </div>
           <div tw="col-span-1 md:flex flex-col sticky h-[fit-content] top-8">
@@ -54,8 +55,8 @@ const Profile = () => {
             <Contacts title="Popüler Kişiler" />
           </div>
         </div>
-      </BaseLayout>
-    )
+      )}
+    </BaseLayout>
   );
 };
 

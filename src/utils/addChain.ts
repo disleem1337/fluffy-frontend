@@ -7,7 +7,7 @@
 //     if (!library?.provider?.request) {
 //       return;
 //     }
-  
+
 //     try {
 //       await library.provider.request({
 //         method: "wallet_switchEthereumChain",
@@ -51,26 +51,26 @@
 //     }
 //   }
 
-export default async function({provider}:any){
-        try {
-          await provider.request({
-            method: "wallet_addEthereumChain",
-            params: [
-              {
-                chainId: "0x38",
-                chainName: "Binance Smart Chain",
-                rpcUrls: ["https://bsc-dataseed.binance.org/"],
-                nativeCurrency: {
-                  name: "BNB",
-                  symbol: "BNB",
-                  decimals: 18,
-                },
-                blockExplorerUrls: ["https://bscscan.com/"],
-              },
-            ],
-          });
-          return true;
-        } catch (error) {
-          return false;
-        }
+export default async function ({ provider }: any) {
+  try {
+    await provider.request({
+      method: "wallet_addEthereumChain",
+      params: [
+        {
+          chainId: "0x38",
+          chainName: "Binance Smart Chain",
+          rpcUrls: ["https://bsc-dataseed.binance.org/"],
+          nativeCurrency: {
+            name: "BNB",
+            symbol: "BNB",
+            decimals: 18,
+          },
+          blockExplorerUrls: ["https://bscscan.com/"],
+        },
+      ],
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
 }

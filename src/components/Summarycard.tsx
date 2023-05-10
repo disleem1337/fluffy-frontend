@@ -4,6 +4,7 @@ import tw from "twin.macro";
 import LoginSplash from "../assets/login-splash.jpg";
 import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 import { Button, ButtonVariant, BorderRadius } from "./Button/Button";
+import { getImageWithFallback } from "../utils";
 
 export const SummaryCard = () => {
   const { user } = useFluffyAuth();
@@ -16,20 +17,17 @@ export const SummaryCard = () => {
       {/* SummaryCard Following Details */}
       <div tw="w-full h-full flex flex-row justify-around items-end p-2">
         <div tw="flex flex-col items-center">
-          <p tw="text-lg font-semibold">1984</p>
+          <p tw="text-lg font-semibold">{user.followerCount}</p>
           <p>Followers</p>
         </div>
         <div tw="flex flex-col items-center rounded-3xl bg-[#04060A] mt-[-50%] z-30">
           <img
             tw="w-full h-28 object-center rounded-3xl  p-1 object-cover "
-            src={
-              user.profileImage ||
-              "https://www.arweave.net/01H1V-i5ikyQvXof2vXsdOMbOpjWkaj7L1QXkWRa3Io?ext=png"
-            }
+            src={getImageWithFallback(user.profileImage)}
           />
         </div>
         <div tw="flex flex-col items-center">
-          <p tw="text-lg font-semibold">1984</p>
+          <p tw="text-lg font-semibold">{user.followingCount}</p>
           <p>Following</p>
         </div>
       </div>
