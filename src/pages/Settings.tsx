@@ -44,7 +44,7 @@ const Settings = () => {
           <ProfileBanner />
           <ProfileInfo />
           {postList.map((post, index) => (
-            <Post postData={post} key={index} />
+            <Post postData={post} key={index} redirectOnClick />
           ))}
         </div>
         <div tw="col-span-1 md:flex flex-col sticky h-[fit-content] top-8">
