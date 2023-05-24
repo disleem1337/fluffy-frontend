@@ -5,25 +5,22 @@ import { RiUserFollowFill } from "react-icons/ri";
 import { BsFillShareFill } from "react-icons/bs";
 import { IoIosNotifications } from "react-icons/io";
 
-const NoficationsButton = ({ type, action, seen, active }: any) => {
+const NoficationsButton = ({ type, action, seen, active, message }: any) => {
   const types: any = {
     like: {
       type: "like",
       icon: <AiTwotoneLike color="white" />,
       title: "Yeni bir beğeni aldınız",
-      desc: `${action} gönderinizi beğendi`,
     },
     follow: {
       type: "follow",
       icon: <RiUserFollowFill color="white" />,
       title: "Yeni bir arkadaşlık isteği aldınız",
-      desc: `${action} sizi takip etmeye başladı`,
     },
-    share: {
-      type: "share",
+    comment: {
+      type: "comment",
       icon: <BsFillShareFill size={16} color="white" />,
-      title: "Gönderiniz paylaşıldı",
-      desc: `${action} gönderinizi paylaştı`,
+      title: "Yeni bir yorum aldınız",
     },
   };
 
@@ -42,7 +39,7 @@ const NoficationsButton = ({ type, action, seen, active }: any) => {
       <div tw="p-2 rounded-full h-8 w-8 bg-black">{selectedType.icon}</div>
       <div tw="flex flex-col ">
         <h1 tw="font-semibold ">{selectedType.title}</h1>
-        <p tw="text-xs">{selectedType.desc}</p>
+        <p tw="text-xs">{message}</p>
       </div>
     </div>
   );

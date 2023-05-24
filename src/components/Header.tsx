@@ -15,6 +15,8 @@ import {
 import { Link, NavLink } from "react-router-dom";
 import { Profiletab } from "./Profiletab";
 import { AnimatePresence, motion, useInView } from "framer-motion";
+import { getNotifications } from "../services/notification";
+import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 
 const HeaderLink: Array<{
   id: number;
@@ -63,8 +65,11 @@ const HeaderLink: Array<{
 const HEADER_HEIGHT = (70 * 3) / 4;
 
 const Header = () => {
+  const { token } = useFluffyAuth();
+
   const containerRef = useRef(null);
   const [isInView, setIsInView] = useState(true);
+  const [unseenNotifications, setUnseenNotifications] = useState(false);
 
   useEffect(() => {
     function onScroll() {
@@ -74,6 +79,16 @@ const Header = () => {
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const unSeennotifications = (await getNotifications(token!, false)).data;
+
+      if (unSeennotifications.length > 0) setUnseenNotifications(true);
+    })();
+  }, []);
+
+  console.log(`Unseen notifications: ${unseenNotifications}`);
   return (
     <div
       ref={containerRef}
@@ -92,14 +107,21 @@ const Header = () => {
           >
             {HeaderLink.map((link, index) =>
               link.link ? (
-                <HeaderTab
-                  layoutId="inline-header-blob"
-                  name={link.name}
-                  link={link.link}
-                  icon={link.icon}
-                  key={index}
-                  fillIcon={link.fillIcon}
-                />
+                ((link) => (
+                  <div tw="relative">
+                    <HeaderTab
+                      layoutId="inline-header-blob"
+                      name={link.name}
+                      link={link.link}
+                      icon={link.icon}
+                      key={index}
+                      fillIcon={link.fillIcon}
+                    />
+                    {link.name == "Bildirimler" && unseenNotifications && (
+                      <div tw="w-2 h-2 rounded-full top-0 -right-1 bg-red-500 absolute"></div>
+                    )}
+                  </div>
+                ))(link)
               ) : (
                 <button key={index}>{link.icon}</button>
               )
@@ -143,13 +165,21 @@ const Header = () => {
             <div tw="flex gap-12 justify-center w-[fit-content]">
               {HeaderLink.map((link, index) =>
                 link.link ? (
-                  <HeaderTab
-                    name={link.name}
-                    link={link.link}
-                    icon={link.icon}
-                    key={index}
-                    fillIcon={link.fillIcon}
-                  />
+                  ((link) => (
+                    <div tw="relative">
+                      <HeaderTab
+                        layoutId="inline-header-blob"
+                        name={link.name}
+                        link={link.link}
+                        icon={link.icon}
+                        key={index}
+                        fillIcon={link.fillIcon}
+                      />
+                      {link.name == "Bildirimler" && unseenNotifications && (
+                        <div tw="w-2 h-2 rounded-full top-0 -right-1 bg-red-500 absolute"></div>
+                      )}
+                    </div>
+                  ))(link)
                 ) : (
                   <button key={index}>{link.icon}</button>
                 )
@@ -170,7 +200,7 @@ const Header = () => {
 
 type HeaderTabProps = {
   name: string;
-  link: string;
+  link?: string;
   icon: React.ReactNode;
   fillIcon?: React.ReactNode;
   layoutId?: string;
@@ -184,7 +214,7 @@ const HeaderTab = ({
   layoutId,
 }: HeaderTabProps) => {
   return (
-    <NavLink to={link}>
+    <NavLink to={link || ""}>
       {({ isActive }) => {
         return (
           <div tw="flex flex-col md:flex-row gap-2 justify-center items-center w-full relative">
