@@ -8,14 +8,29 @@ import { followUser, getAllUser, unfollowUser } from "../services/user";
 import { useFluffyAuth } from "../providers/fluffyAuthProvider";
 import { Link } from "react-router-dom";
 import { getImageWithFallback } from "../utils";
+import { useFollowCache } from "../stores/followCache";
 
 type ProfiletabProps = {
   title: string;
 };
 
 const Contacts = ({ title }: ProfiletabProps) => {
-  const { token } = useFluffyAuth();
+  const { token, refreshUser } = useFluffyAuth();
   const [userList, setuserList] = useState<any[]>([]);
+
+  const cacheMap = useFollowCache((store) => store.followsById);
+  const isCached = useFollowCache((store) => store.isCached);
+  const getCacheValue = useFollowCache((store) => store.getCacheValue);
+  const setCacheValue = useFollowCache((store) => store.setCacheValue);
+
+  const getUserFollow = (user: {
+    _id: string;
+    following: boolean;
+  }): boolean => {
+    const cached = isCached(user._id);
+
+    return cached ? (getCacheValue(user._id) as boolean) : user.following;
+  };
 
   useEffect(() => {
     (async function () {
@@ -25,8 +40,11 @@ const Contacts = ({ title }: ProfiletabProps) => {
   }, []);
 
   const onClickFollowButton = async (user: any) => {
+    const followValue = getUserFollow(user);
     try {
-      if (user.following) {
+      if (followValue) {
+        setCacheValue(user._id, false);
+
         await unfollowUser(token!, user._id);
         setuserList(
           produce((draft) => {
@@ -37,7 +55,9 @@ const Contacts = ({ title }: ProfiletabProps) => {
             if (followUpdateUser) followUpdateUser.following = false;
           })
         );
+        refreshUser();
       } else {
+        setCacheValue(user._id, true);
         await followUser(token!, user._id);
         setuserList(
           produce((draft) => {
@@ -48,10 +68,14 @@ const Contacts = ({ title }: ProfiletabProps) => {
             if (followUpdateUser) followUpdateUser.following = true;
           })
         );
+        refreshUser();
       }
-    } catch (err) {}
+    } catch (err) {
+      setCacheValue(user._id, followValue);
+    }
   };
 
+  console.log(title, cacheMap);
   return (
     <div tw="px-5 py-3 bg-white rounded-lg flex flex-col gap-2 mb-4 border-[1px]">
       <div>{title}</div>
@@ -78,11 +102,13 @@ const Contacts = ({ title }: ProfiletabProps) => {
               borderRadius={BorderRadius.LARGE}
               onClick={() => onClickFollowButton(user)}
               variant={
-                user.following ? ButtonVariant.SECONDARY : ButtonVariant.PRIMARY
+                getUserFollow(user)
+                  ? ButtonVariant.SECONDARY
+                  : ButtonVariant.PRIMARY
               }
               tw="w-full py-4"
             >
-              {user.following ? "Takipten çık" : "Takip et"}
+              {getUserFollow(user) ? "Takipten çık" : "Takip et"}
             </Button>
           </div>
         </div>
