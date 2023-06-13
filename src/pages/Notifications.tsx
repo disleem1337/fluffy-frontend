@@ -40,6 +40,7 @@ const Notifications = () => {
               seen={notification.seen}
               type={notification.action}
               message={notification.metadata.message}
+              metadata={notification.metadata}
             />
           ))}
         </div>
