@@ -168,7 +168,7 @@ const Post = ({
       >
         <div tw="flex items-center gap-2 text-sm">
           <img
-            tw="w-10 h-10 rounded-full"
+            tw="w-10 h-10 rounded-full object-cover object-center"
             src={getImageWithFallback(postData.user[0].profileImage)}
           />
           {/* {postData?.user ? (
